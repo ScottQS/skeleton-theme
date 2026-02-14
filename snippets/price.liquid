@@ -1,0 +1,23 @@
+{% liquid
+  assign target = variant | default: product.selected_or_first_available_variant | default: product
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price | default: 0
+%}
+
+<div class="price">
+  <span>{{ price | money }}</span>
+  {% if compare_at_price > price %}
+    <s class="price--compare">{{ compare_at_price | money }}</s>
+  {% endif %}
+</div>
+
+{% if show_unit_price and target.unit_price_measurement %}
+  <p class="price--unit">
+    {{ target.unit_price | money }}
+    /
+    {% if target.unit_price_measurement.reference_value != 1 %}
+      {{ target.unit_price_measurement.reference_value }}
+    {% endif %}
+    {{ target.unit_price_measurement.reference_unit }}
+  </p>
+{% endif %}

@@ -1,0 +1,95 @@
+{% liquid
+  assign card_product = product
+  assign featured_media = card_product.featured_media
+  assign secondary_media = card_product.images[1]
+  assign selected_variant = card_product.selected_or_first_available_variant
+  assign card_title = card_product.title
+  assign context_section_id = section.id | default: 'global'
+  assign card_form_id = 'ProductCardForm-' | append: context_section_id | append: '-' | append: card_product.id
+%}
+
+<article class="card product-card">
+  <a class="card__media product-card__media" href="{{ card_product.url }}">
+    {% if featured_media %}
+      {% render
+        'image',
+        image: featured_media.preview_image,
+        width: 900,
+        class: 'product-card__image product-card__image--primary',
+        sizes: '(min-width: 990px) 24vw, (min-width: 750px) 33vw, 50vw'
+      %}
+      {% if secondary_media %}
+        {% render
+          'image',
+          image: secondary_media,
+          width: 900,
+          class: 'product-card__image product-card__image--secondary',
+          sizes: '(min-width: 990px) 24vw, (min-width: 750px) 33vw, 50vw'
+        %}
+      {% endif %}
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  </a>
+
+  <div class="card__content">
+    <h3><a href="{{ card_product.url }}">{{ card_title }}</a></h3>
+
+    {% if card_product.compare_at_price_max > card_product.price %}
+      <span class="badge badge--sale">Sale</span>
+    {% endif %}
+    {% unless card_product.available %}
+      <span class="badge badge--soldout">Sold out</span>
+    {% endunless %}
+
+    {% if card_product.price_varies %}
+      <p class="price">
+        {{ card_product.price_min | money }} - {{ card_product.price_max | money }}
+      </p>
+    {% else %}
+      {% render 'price', variant: selected_variant, show_unit_price: true %}
+    {% endif %}
+
+    {% if card_product.available %}
+      {% if card_product.has_only_default_variant %}
+        {% form 'product', card_product, id: card_form_id %}
+          <input type="hidden" name="id" value="{{ selected_variant.id }}">
+          <button class="button button--secondary product-card__quick-buy" type="submit" name="add">
+            Quick buy
+          </button>
+        {% endform %}
+      {% else %}
+        <a class="button button--secondary product-card__quick-buy" href="{{ card_product.url }}">
+          Choose options
+        </a>
+      {% endif %}
+    {% endif %}
+  </div>
+</article>
+
+{% stylesheet %}
+  .product-card__media {
+    position: relative;
+    display: block;
+  }
+
+  .product-card__image {
+    transition: opacity 0.25s ease;
+  }
+
+  .product-card__image--secondary {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .product-card__media:hover .product-card__image--secondary,
+  .product-card__media:focus-visible .product-card__image--secondary {
+    opacity: 1;
+  }
+
+  .product-card__quick-buy {
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+{% endstylesheet %}

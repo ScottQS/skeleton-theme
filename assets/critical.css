@@ -1,20 +1,63 @@
-/** Critical CSS for the theme. This file is included on every page. */
-
-/* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  margin: 0;
+}
+
+html {
+  font-size: calc(16px * var(--font-size-scale));
 }
 
 body {
-  display: flex;
-  flex-direction: column;
   margin: 0;
   min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body-family);
+  font-style: var(--font-body-style);
+  font-weight: var(--font-body-weight);
+  line-height: 1.6;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
-html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
-  overflow: hidden;
+main {
+  flex: 1 1 auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  line-height: 1.2;
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: currentcolor;
 }
 
 img,
@@ -28,69 +71,186 @@ svg {
 }
 
 input,
+select,
 textarea,
-select {
+button {
   font: inherit;
+}
+
+input,
+select,
+textarea {
   border-radius: var(--style-border-radius-inputs);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-surface-foreground);
 }
 
+input,
 select {
-  background-color: var(--color-background);
-  color: currentcolor;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.75rem;
 }
 
-dialog {
-  background-color: var(--color-background);
+textarea {
+  min-height: 8rem;
+  padding: 0.75rem;
+  resize: vertical;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.skip-to-content-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -5rem;
+  z-index: 50;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--color-accent);
+  color: var(--color-accent-foreground);
+  border-radius: var(--style-border-radius-buttons);
+}
+
+.skip-to-content-link:focus-visible {
+  top: 0.5rem;
+}
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--style-border-radius-buttons);
+  border: 1px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.button--primary {
+  background-color: var(--color-accent);
+  color: var(--color-accent-foreground);
+}
+
+.button--primary:hover {
+  background-color: color-mix(in srgb, var(--color-accent), #000 16%);
+}
+
+.button--secondary {
+  background-color: transparent;
+  border-color: var(--color-border);
   color: var(--color-foreground);
 }
 
-p {
-  text-wrap: pretty;
-}
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  overflow-wrap: break-word;
+.button--secondary:hover {
+  background-color: var(--color-muted);
 }
 
-p:empty {
-  display: none;
+.section-shell {
+  margin-block: var(--section-spacing);
 }
 
-:is(p, h1, h2, h3, h4, h5, h6):first-child,
-:empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
-  margin-block-start: 0;
+.section-heading {
+  margin-bottom: 1.25rem;
 }
 
-:is(p, h1, h2, h3, h4, h5, h6):last-child,
-:where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
-  margin-block-end: 0;
+.section-subheading {
+  color: color-mix(in srgb, var(--color-foreground), #fff 45%);
 }
 
-/** Theme styles below */
-body {
-  font-family: var(--font-primary--family);
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+.card {
+  background-color: var(--color-surface);
+  color: var(--color-surface-foreground);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  overflow: hidden;
 }
 
-/** Section layout utilities */
+.card__media {
+  position: relative;
+  overflow: hidden;
+}
 
-/**
- * Setup a grid that enables both full-width and constrained layouts
- * depending on the class of the child elements.
- *
- * By default, a minimum content margin is set on the left and right
- * sides of the section and the content is centered in the viewport to
- * not exceed the maximum page width.
- *
- * When a child element is given the `full-width` class, it will span
- * the entire viewport.
- */
+.card__media img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.card__content {
+  padding: 1rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.price {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.price--compare {
+  color: color-mix(in srgb, var(--color-foreground), #fff 45%);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+.price--unit {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: color-mix(in srgb, var(--color-foreground), #fff 45%);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--color-border);
+}
+
+.badge--sale {
+  background-color: var(--color-accent);
+  color: var(--color-accent-foreground);
+  border-color: transparent;
+}
+
+.badge--soldout {
+  background-color: var(--color-muted);
+  color: var(--color-muted-foreground);
+}
+
+.rte > * + * {
+  margin-top: 1rem;
+}
+
+.rte ul,
+.rte ol {
+  margin-left: 1.25rem;
+}
+
+.rte blockquote {
+  margin-inline: 0;
+  border-left: 3px solid var(--color-border);
+  padding-left: 1rem;
+}
+
+.empty-state {
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
 .shopify-section {
   --content-width: min(
     calc(var(--page-width) - var(--page-margin) * 2),
@@ -99,19 +259,56 @@ body {
   --content-margin: minmax(var(--page-margin), 1fr);
   --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
 
-  /* This is required to make <img> elements work as background images */
   position: relative;
-  grid-template-columns: var(--content-grid);
   display: grid;
+  grid-template-columns: var(--content-grid);
   width: 100%;
 }
 
-/* Child elements, by default, are constrained to the central column of the grid. */
 .shopify-section > * {
   grid-column: 2;
 }
 
-/* Child elements that use the full-width utility class span the entire viewport. */
 .shopify-section > .full-width {
   grid-column: 1 / -1;
+}
+
+.pagination {
+  margin-top: 1.5rem;
+}
+
+.pagination .page,
+.pagination .prev,
+.pagination .next {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 2.4rem;
+  min-height: 2.4rem;
+  margin-right: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.4rem;
+  text-decoration: none;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 749px) {
+  .section-shell {
+    margin-block: calc(var(--section-spacing) * 0.75);
+  }
+
+  .button {
+    width: 100%;
+  }
 }

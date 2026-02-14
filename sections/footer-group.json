@@ -1,20 +1,15 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "type": "footer",
-  "name": "t:general.footer",
+  "name": "Footer",
   "sections": {
     "footer": {
       "type": "footer",
       "settings": {
-        "menu": "",
+        "brand_message": "Built for bold catalogs, trend drops, and fast-moving fashion stories.",
+        "menu": "footer",
+        "newsletter_heading": "Stay in the loop",
+        "show_social_icons": true,
+        "show_follow_on_shop": true,
         "show_payment_icons": true
       }
     }

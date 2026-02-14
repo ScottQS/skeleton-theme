@@ -1,0 +1,102 @@
+{% liquid
+  assign featured_collection = collections[section.settings.collection]
+  assign products_to_show = section.settings.products_to_show
+%}
+
+<section class="section-shell">
+  <div class="section-heading">
+    {% if section.settings.heading != blank %}
+      <h2>{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <p class="section-subheading">{{ section.settings.subheading }}</p>
+    {% endif %}
+  </div>
+
+  {% if featured_collection != blank %}
+    <div class="featured-collection-grid">
+      {% for product in featured_collection.products limit: products_to_show %}
+        {% render 'product-card', product: product %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_view_all %}
+      <a class="button button--secondary" href="{{ featured_collection.url }}">View collection</a>
+    {% endif %}
+  {% else %}
+    <div class="empty-state">
+      <p>Select a collection to show featured products.</p>
+    </div>
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .featured-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  @media (max-width: 1099px) {
+    .featured-collection-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 899px) {
+    .featured-collection-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 540px) {
+    .featured-collection-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured collection"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Showcase core bestsellers and seasonal edits."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show collection link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection"
+    }
+  ]
+}
+{% endschema %}

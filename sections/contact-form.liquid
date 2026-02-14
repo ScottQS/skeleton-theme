@@ -1,0 +1,82 @@
+<section class="section-shell contact-page">
+  <h1>{{ page.title }}</h1>
+
+  {% if page.content != blank %}
+    <div class="rte">
+      {{ page.content }}
+    </div>
+  {% endif %}
+
+  {% form 'contact', class: 'contact-page__form card' %}
+    <div class="card__content">
+      {% if form.posted_successfully? %}
+        <p>Thanks for your message. We will reply soon.</p>
+      {% endif %}
+
+      {{ form.errors | default_errors }}
+
+      <label for="ContactFormName-{{ section.id }}">Name</label>
+      <input
+        id="ContactFormName-{{ section.id }}"
+        type="text"
+        name="contact[name]"
+        value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+        autocomplete="name"
+      >
+
+      <label for="ContactFormEmail-{{ section.id }}">Email</label>
+      <input
+        id="ContactFormEmail-{{ section.id }}"
+        type="email"
+        name="contact[email]"
+        value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="off"
+        required
+      >
+
+      <label for="ContactFormPhone-{{ section.id }}">Phone</label>
+      <input
+        id="ContactFormPhone-{{ section.id }}"
+        type="tel"
+        name="contact[phone]"
+        value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+        autocomplete="tel"
+      >
+
+      <label for="ContactFormMessage-{{ section.id }}">Message</label>
+      <textarea
+        id="ContactFormMessage-{{ section.id }}"
+        name="contact[body]"
+        rows="10"
+        required
+      >{{ form.body }}</textarea>
+
+      <button class="button button--primary" type="submit">Send message</button>
+    </div>
+  {% endform %}
+</section>
+
+{% stylesheet %}
+  .contact-page__form {
+    margin-top: 1rem;
+  }
+
+  .contact-page__form .card__content {
+    display: grid;
+    gap: 0.55rem;
+    max-width: 40rem;
+  }
+
+  .contact-page__form button {
+    width: fit-content;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact form",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,156 @@
+<section class="section-shell">
+  <div class="section-heading">
+    {% if section.settings.heading != blank %}
+      <h2>{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <p class="section-subheading">{{ section.settings.subheading }}</p>
+    {% endif %}
+  </div>
+
+  <div class="lookbook-grid">
+    {% for block in section.blocks %}
+      {% liquid
+        assign block_product = all_products[block.settings.product]
+      %}
+      <article class="lookbook-card card" {{ block.shopify_attributes }}>
+        <a href="{% if block_product != blank %}{{ block_product.url }}{% elsif block.settings.link != blank %}{{ block.settings.link }}{% else %}#{% endif %}">
+          {% if block.settings.image != blank %}
+            {% render
+              'image',
+              image: block.settings.image,
+              width: 1400,
+              class: 'lookbook-card__image',
+              sizes: '(min-width: 990px) 30vw, (min-width: 750px) 50vw, 100vw'
+            %}
+          {% else %}
+            {{ 'collection-1' | placeholder_svg_tag: 'lookbook-card__placeholder' }}
+          {% endif %}
+        </a>
+
+        <div class="card__content">
+          {% if block.settings.eyebrow != blank %}
+            <p class="lookbook-card__eyebrow">{{ block.settings.eyebrow }}</p>
+          {% endif %}
+          {% if block.settings.heading != blank %}
+            <h3>{{ block.settings.heading }}</h3>
+          {% endif %}
+
+          {% if block_product != blank %}
+            <p><a href="{{ block_product.url }}">{{ block_product.title }}</a></p>
+            {% render 'price', variant: block_product.selected_or_first_available_variant, show_unit_price: true %}
+          {% elsif block.settings.body != blank %}
+            <p>{{ block.settings.body }}</p>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .lookbook-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .lookbook-card__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 989px) {
+    .lookbook-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .lookbook-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Lookbook",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Lookbook"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Build an image-first story that links style inspiration to products."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Look",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow text",
+          "default": "Style edit"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Utility set"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "body",
+          "label": "Body text",
+          "default": "Optional supporting text if no product is selected."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Fallback link"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook",
+      "blocks": [
+        {
+          "type": "look"
+        },
+        {
+          "type": "look"
+        },
+        {
+          "type": "look"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

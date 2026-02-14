@@ -1,23 +1,39 @@
-{% comment %}
-  This section is used in the 404 template to render page shown when customers
-  enter an invalid store URL.
+<section class="section-shell">
+  <div class="empty-state">
+    <h1>Page not found</h1>
+    <p>The page you requested does not exist or has moved.</p>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
-{% endcomment %}
+    <div class="error-page__actions">
+      <a class="button button--primary" href="{{ routes.root_url }}">Go to home page</a>
+      <a class="button button--secondary" href="{{ routes.all_products_collection_url }}">Continue shopping</a>
+    </div>
 
-<h1>{{ '404.title' | t }}</h1>
+    <form class="error-page__search" action="{{ routes.search_url }}" method="get" role="search">
+      <label for="NotFoundSearch">Search the store</label>
+      <input id="NotFoundSearch" type="search" name="q" placeholder="Search products">
+      <button class="button button--primary" type="submit">Search</button>
+    </form>
+  </div>
+</section>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+{% stylesheet %}
+  .error-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1rem 0;
+  }
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+  .error-page__search {
+    display: grid;
+    gap: 0.5rem;
+    max-width: 24rem;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.404",
+  "name": "Main 404",
   "settings": []
 }
 {% endschema %}

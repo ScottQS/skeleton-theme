@@ -1,50 +1,589 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'ProductForm-' | append: section.id
+%}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
-{% endcomment %}
+<section class="section-shell product-section" data-product-root>
+  <div class="product-section__grid">
+    <div class="product-section__media">
+      {% if product.media.size > 0 %}
+        {% for media in product.media %}
+          <div class="product-section__media-item" data-media-id="{{ media.id }}">
+            {% case media.media_type %}
+              {% when 'image' %}
+                {% render
+                  'image',
+                  image: media.preview_image,
+                  width: 2200,
+                  class: 'product-section__image',
+                  sizes: '(min-width: 990px) 50vw, 100vw'
+                %}
+              {% when 'external_video' %}
+                {{ media | external_video_tag: class: 'product-section__video', loading: 'lazy' }}
+              {% when 'video' %}
+                {{ media | video_tag: controls: true, class: 'product-section__video' }}
+              {% when 'model' %}
+                {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-section__model' }}
+            {% endcase %}
+          </div>
+        {% endfor %}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'product-section__placeholder' }}
+      {% endif %}
+    </div>
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
+    <div class="product-section__content">
+      {% form 'product', product, id: product_form_id, class: 'product-section__form' %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'vendor' %}
+              <p class="product-section__vendor" {{ block.shopify_attributes }}>{{ product.vendor }}</p>
+            {% when 'title' %}
+              <h1 {{ block.shopify_attributes }}>{{ product.title }}</h1>
+            {% when 'sku' %}
+              <p {{ block.shopify_attributes }}>SKU: {{ current_variant.sku | default: 'N/A' }}</p>
+            {% when 'price' %}
+              <div class="product-section__price-wrap" {{ block.shopify_attributes }}>
+                <div class="price">
+                  <span data-product-price>{{ current_variant.price | money }}</span>
+                  <s
+                    class="price--compare"
+                    data-product-compare
+                    {% unless current_variant.compare_at_price > current_variant.price %}
+                      hidden
+                    {% endunless %}
+                  >
+                    {{ current_variant.compare_at_price | money }}
+                  </s>
+                </div>
+                {% render 'price', variant: current_variant, show_unit_price: true %}
+                {% if product.price_varies %}
+                  <p>From {{ product.price_min | money }} to {{ product.price_max | money }}</p>
+                {% endif %}
+              </div>
+            {% when 'inventory' %}
+              <p data-product-availability {{ block.shopify_attributes }}>
+                {% if current_variant.available %}
+                  In stock
+                {% else %}
+                  Sold out
+                {% endif %}
+              </p>
+            {% when 'description' %}
+              <div class="rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+            {% when 'size_chart' %}
+              {% if block.settings.page != blank %}
+                <details class="product-section__size-chart" {{ block.shopify_attributes }}>
+                  <summary>Size chart</summary>
+                  <div class="rte">
+                    {{ pages[block.settings.page].content }}
+                  </div>
+                </details>
+              {% endif %}
+            {% when 'variant_picker' %}
+              <div class="product-section__variants" {{ block.shopify_attributes }}>
+                {% for option in product.options_with_values %}
+                  <fieldset class="product-section__option">
+                    <legend>{{ option.name }}</legend>
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+                    {% assign has_swatch = false %}
+                    {% for value in option.values %}
+                      {% if value.swatch.image or value.swatch.color %}
+                        {% assign has_swatch = true %}
+                        {% break %}
+                      {% endif %}
+                    {% endfor %}
 
-    <select name="id">
+                    {% if has_swatch %}
+                      <div class="product-section__swatches">
+                        {% for value in option.values %}
+                          {% liquid
+                            assign value_name = value.name | default: value
+                            assign swatch_color = value.swatch.color
+                            assign swatch_image = value.swatch.image
+                            assign input_id = 'Option-' | append: section.id | append: '-' | append: option.position | append: '-' | append: forloop.index0
+                          %}
+                          <input
+                            id="{{ input_id }}"
+                            class="visually-hidden"
+                            type="radio"
+                            name="option-{{ option.position }}"
+                            value="{{ value_name | escape }}"
+                            data-option-input
+                            data-option-position="{{ option.position }}"
+                            {% if value.selected or value_name == option.selected_value %}
+                              checked
+                            {% endif %}
+                          >
+                          <label
+                            for="{{ input_id }}"
+                            class="product-section__swatch"
+                            title="{{ value_name }}"
+                          >
+                            <span class="visually-hidden">{{ value_name }}</span>
+                            <span
+                              class="product-section__swatch-chip"
+                              {% if swatch_image %}
+                                style="background-image: url('{{ swatch_image | image_url: width: 80 }}');"
+                              {% elsif swatch_color %}
+                                style="background-color: {{ swatch_color }};"
+                              {% endif %}
+                            ></span>
+                          </label>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      <div class="product-section__select-wrap">
+                        <label for="Option-{{ section.id }}-{{ option.position }}">{{ option.name }}</label>
+                        <select
+                          id="Option-{{ section.id }}-{{ option.position }}"
+                          data-option-input
+                          data-option-position="{{ option.position }}"
+                        >
+                          {% for value in option.values %}
+                            {% assign value_name = value.name | default: value %}
+                            <option
+                              value="{{ value_name | escape }}"
+                              {% if value.selected or value_name == option.selected_value %}
+                                selected
+                              {% endif %}
+                            >
+                              {{ value_name }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    {% endif %}
+                  </fieldset>
+                {% endfor %}
+              </div>
+            {% when 'quantity_selector' %}
+              <div {{ block.shopify_attributes }}>
+                <label for="ProductQuantity-{{ section.id }}">Quantity</label>
+                <input id="ProductQuantity-{{ section.id }}" type="number" name="quantity" min="1" value="1">
+              </div>
+            {% when 'selling_plan' %}
+              {% if product.selling_plan_groups.size > 0 %}
+                <div {{ block.shopify_attributes }}>
+                  <label for="ProductSellingPlan-{{ section.id }}">Purchase options</label>
+                  <select id="ProductSellingPlan-{{ section.id }}" name="selling_plan">
+                    <option value="">One-time purchase</option>
+                    {% for group in product.selling_plan_groups %}
+                      {% for selling_plan in group.selling_plans %}
+                        <option value="{{ selling_plan.id }}">{{ selling_plan.name }}</option>
+                      {% endfor %}
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
+            {% when 'buy_buttons' %}
+              <div class="product-section__buttons" {{ block.shopify_attributes }}>
+                <button
+                  class="button button--primary"
+                  type="submit"
+                  name="add"
+                  data-add-to-cart
+                  {% unless current_variant.available %}
+                    disabled
+                  {% endunless %}
+                >
+                  {% if current_variant.available %}
+                    Add to cart
+                  {% else %}
+                    Sold out
+                  {% endif %}
+                </button>
+                {{ form | payment_button }}
+              </div>
+            {% when 'pickup_availability' %}
+              <div {{ block.shopify_attributes }}>
+                {% if current_variant.store_availabilities.size > 0 %}
+                  <h2>Pickup availability</h2>
+                  <ul role="list" class="product-section__pickup-list">
+                    {% for availability in current_variant.store_availabilities %}
+                      <li>
+                        {{ availability.location.name }}
+                        {% if availability.available %}
+                          - Available for pickup
+                        {% else %}
+                          - Unavailable for pickup
+                        {% endif %}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            {% when 'tax_and_shipping' %}
+              <p class="product-section__tax-note" {{ block.shopify_attributes }}>
+                {% if cart.taxes_included %}
+                  Taxes included.
+                {% else %}
+                  Taxes and shipping calculated at checkout.
+                {% endif %}
+              </p>
+            {% when 'gift_card_recipient' %}
+              {% if product.gift_card? %}
+                <fieldset class="product-section__gift-card" {{ block.shopify_attributes }}>
+                  <legend>Send this gift card to a recipient</legend>
+                  <label for="RecipientEmail-{{ section.id }}">Recipient email</label>
+                  <input
+                    id="RecipientEmail-{{ section.id }}"
+                    type="email"
+                    name="properties[Recipient email]"
+                    value="{{ form.email }}"
+                  >
+
+                  <label for="RecipientName-{{ section.id }}">Recipient name</label>
+                  <input
+                    id="RecipientName-{{ section.id }}"
+                    type="text"
+                    name="properties[Recipient name]"
+                    value="{{ form.name }}"
+                  >
+
+                  <label for="RecipientMessage-{{ section.id }}">Message</label>
+                  <textarea
+                    id="RecipientMessage-{{ section.id }}"
+                    name="properties[Message]"
+                  >{{ form.message }}</textarea>
+
+                  <label for="RecipientSendOn-{{ section.id }}">Send on</label>
+                  <input
+                    id="RecipientSendOn-{{ section.id }}"
+                    type="date"
+                    name="properties[Send on]"
+                    value="{{ form.send_on }}"
+                  >
+                </fieldset>
+              {% endif %}
+            {% when 'shop_pay_installments' %}
+              <div {{ block.shopify_attributes }}>
+                {{ form | payment_terms }}
+              </div>
+            {% when '@app' %}
+              <div {{ block.shopify_attributes }}>{% render block %}</div>
+            {% when 'custom_liquid' %}
+              <div {{ block.shopify_attributes }}>
+                {{ block.settings.custom_liquid }}
+              </div>
+          {% endcase %}
+        {% endfor %}
+      {% endform %}
+    </div>
+  </div>
+
+  <script type="application/json" data-product-variants>
+    [
       {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
+        {
+          "id": {{ variant.id }},
+          "available": {{ variant.available | json }},
+          "options": {{ variant.options | json }},
+          "price": {{ variant.price | json }},
+          "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+          "price_formatted": {{ variant.price | money | json }},
+          "compare_at_price_formatted": {{ variant.compare_at_price | money | json }},
+          "featured_media_id": {{ variant.featured_media.id | default: 0 | json }}
+        }{% unless forloop.last %},{% endunless %}
       {% endfor %}
-    </select>
+    ]
+  </script>
+</section>
 
-    <input type="text" name="quantity" min="1" value="1">
+{% stylesheet %}
+  .product-section__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+  .product-section__media {
+    display: grid;
+    gap: 0.75rem;
+    position: sticky;
+    top: 1rem;
+  }
+
+  .product-section__media-item {
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .product-section__media-item.is-active {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+  }
+
+  .product-section__image img,
+  .product-section__video,
+  .product-section__model {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .product-section__content {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .product-section__form {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .product-section__vendor {
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .product-section__option {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .product-section__option + .product-section__option {
+    margin-top: 0.5rem;
+  }
+
+  .product-section__size-chart {
+    border: 1px solid var(--color-border);
+    border-radius: 0.65rem;
+    padding: 0.6rem;
+    background-color: var(--color-surface);
+  }
+
+  .product-section__size-chart summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .product-section__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .product-section__swatch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    min-height: 2rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    padding: 2px;
+  }
+
+  .product-section__swatch-chip {
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 999px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--color-muted);
+  }
+
+  .product-section__swatches input:checked + .product-section__swatch {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+
+  .product-section__select-wrap {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .product-section__buttons {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .product-section__pickup-list {
+    margin: 0.3rem 0 0;
+    padding-left: 1rem;
+  }
+
+  .product-section__gift-card {
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 0.85rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .product-section__tax-note {
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--color-foreground), #fff 35%);
+  }
+
+  @media (max-width: 989px) {
+    .product-section__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .product-section__media {
+      position: static;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.product",
+  "name": "Main product",
   "settings": [],
+  "blocks": [
+    {
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "sku",
+      "name": "SKU",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "inventory",
+      "name": "Availability",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    },
+    {
+      "type": "size_chart",
+      "name": "Size chart",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Size chart page"
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1
+    },
+    {
+      "type": "quantity_selector",
+      "name": "Quantity selector",
+      "limit": 1
+    },
+    {
+      "type": "selling_plan",
+      "name": "Selling plans",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1
+    },
+    {
+      "type": "pickup_availability",
+      "name": "Pickup availability",
+      "limit": 1
+    },
+    {
+      "type": "tax_and_shipping",
+      "name": "Tax and shipping note",
+      "limit": 1
+    },
+    {
+      "type": "gift_card_recipient",
+      "name": "Gift card recipient form",
+      "limit": 1
+    },
+    {
+      "type": "shop_pay_installments",
+      "name": "Shop Pay installments",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom liquid"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main product",
+      "blocks": [
+        {
+          "type": "vendor"
+        },
+        {
+          "type": "title"
+        },
+        {
+          "type": "price"
+        },
+        {
+          "type": "inventory"
+        },
+        {
+          "type": "size_chart"
+        },
+        {
+          "type": "variant_picker"
+        },
+        {
+          "type": "quantity_selector"
+        },
+        {
+          "type": "buy_buttons"
+        },
+        {
+          "type": "pickup_availability"
+        },
+        {
+          "type": "shop_pay_installments"
+        },
+        {
+          "type": "tax_and_shipping"
+        },
+        {
+          "type": "description"
+        }
+      ]
+    }
+  ],
   "disabled_on": {
     "groups": ["header", "footer"]
   }

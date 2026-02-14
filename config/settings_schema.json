@@ -1,82 +1,230 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Skeleton",
-    "theme_version": "0.1.0",
-    "theme_author": "Shopify",
-    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
-    "theme_support_url": "https://support.shopify.com/"
+    "theme_name": "Rivet",
+    "theme_version": "1.0.0",
+    "theme_author": "Urban Commerce Studio",
+    "theme_documentation_url": "https://example.com/rivet/docs",
+    "theme_support_url": "https://example.com/rivet/support"
   },
   {
-    "name": "t:general.typography",
+    "name": "Branding",
     "settings": [
       {
-        "type": "header",
-        "content": "t:general.fonts"
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
       },
       {
-        "type": "font_picker",
-        "id": "type_primary_font",
-        "default": "work_sans_n4",
-        "label": "t:general.primary"
+        "type": "range",
+        "id": "logo_width_desktop",
+        "min": 80,
+        "max": 320,
+        "step": 10,
+        "unit": "px",
+        "default": 170,
+        "label": "Logo width on large screens"
+      },
+      {
+        "type": "range",
+        "id": "logo_width_mobile",
+        "min": 60,
+        "max": 220,
+        "step": 10,
+        "unit": "px",
+        "default": 130,
+        "label": "Logo width on small screens"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image"
       }
     ]
   },
   {
-    "name": "t:general.layout",
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "Heading font",
+        "default": "work_sans_n6"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body font",
+        "default": "work_sans_n4"
+      },
+      {
+        "type": "range",
+        "id": "base_font_scale",
+        "min": 90,
+        "max": 120,
+        "step": 1,
+        "unit": "%",
+        "default": 100,
+        "label": "Base font scale"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
     "settings": [
       {
         "type": "select",
         "id": "max_page_width",
-        "label": "t:labels.page_width",
+        "label": "Page width",
         "options": [
           {
-            "value": "90rem",
-            "label": "t:options.page_width.narrow"
+            "value": "84rem",
+            "label": "Compact"
           },
           {
-            "value": "110rem",
-            "label": "t:options.page_width.wide"
+            "value": "96rem",
+            "label": "Standard"
+          },
+          {
+            "value": "108rem",
+            "label": "Wide"
           }
         ],
-        "default": "90rem"
+        "default": "96rem"
       },
       {
         "type": "range",
         "id": "min_page_margin",
-        "min": 10,
-        "max": 100,
-        "step": 1,
+        "min": 12,
+        "max": 48,
+        "step": 2,
         "unit": "px",
-        "label": "t:labels.page_margin",
+        "label": "Page side spacing",
         "default": 20
+      },
+      {
+        "type": "range",
+        "id": "section_vertical_spacing",
+        "min": 24,
+        "max": 96,
+        "step": 4,
+        "unit": "px",
+        "label": "Section spacing",
+        "default": 56
       }
     ]
   },
   {
-    "name": "t:general.colors",
+    "name": "Colors",
     "settings": [
       {
         "type": "color",
         "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
+        "label": "Main background color",
+        "default": "#F5F5F4"
       },
       {
         "type": "color",
         "id": "foreground_color",
-        "default": "#333333",
-        "label": "t:labels.foreground"
+        "label": "Main text color",
+        "default": "#121212"
+      },
+      {
+        "type": "color",
+        "id": "surface_color",
+        "label": "Surface background color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "surface_foreground_color",
+        "label": "Surface text color",
+        "default": "#1F1F1F"
+      },
+      {
+        "type": "color",
+        "id": "accent_color",
+        "label": "Accent background color",
+        "default": "#B5092F"
+      },
+      {
+        "type": "color",
+        "id": "accent_foreground_color",
+        "label": "Accent text color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "muted_color",
+        "label": "Muted background color",
+        "default": "#E5E5E5"
+      },
+      {
+        "type": "color",
+        "id": "muted_foreground_color",
+        "label": "Muted text color",
+        "default": "#3A3A3A"
+      },
+      {
+        "type": "color",
+        "id": "border_color",
+        "label": "Border color",
+        "default": "#D4D4D4"
+      }
+    ]
+  },
+  {
+    "name": "Buttons and inputs",
+    "settings": [
+      {
+        "type": "range",
+        "id": "button_corner_radius",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Button corner radius",
+        "default": 6
       },
       {
         "type": "range",
         "id": "input_corner_radius",
         "min": 0,
-        "max": 10,
+        "max": 24,
         "step": 1,
         "unit": "px",
-        "label": "t:labels.input_corner_radius",
-        "default": 4
+        "label": "Input corner radius",
+        "default": 6
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube",
+        "label": "YouTube URL"
+      },
+      {
+        "type": "url",
+        "id": "social_pinterest",
+        "label": "Pinterest URL"
       }
     ]
   }

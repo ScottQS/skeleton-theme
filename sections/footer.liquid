@@ -1,55 +1,192 @@
-<footer>
-  <div class="footer__copyright">
-    &copy;
-    {{ 'now' | date: '%Y' }}
-    {{ shop.name | link_to: routes.root_url }}, {{ powered_by_link }}
+<footer class="site-footer">
+  <div class="site-footer__content">
+    <div>
+      <h2 class="site-footer__heading">{{ shop.name }}</h2>
+      <p>{{ section.settings.brand_message }}</p>
+      {% if section.settings.show_social_icons %}
+        {% render 'social-icons' %}
+      {% endif %}
+    </div>
+
+    <div>
+      <h2 class="site-footer__heading">Footer menu</h2>
+      <ul class="site-footer__list" role="list">
+        {% for link in section.settings.menu.links %}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="site-footer__heading">{{ section.settings.newsletter_heading }}</h2>
+      {% form 'customer', class: 'site-footer__newsletter' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <label class="visually-hidden" for="FooterNewsletterEmail">Email address</label>
+        <input
+          id="FooterNewsletterEmail"
+          type="email"
+          name="contact[email]"
+          value="{{ form.email }}"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="email"
+          placeholder="Email address"
+          required
+        >
+        <button class="button button--primary" type="submit">Join newsletter</button>
+
+        {% if form.posted_successfully? %}
+          <p>Thank you for signing up.</p>
+        {% elsif form.errors %}
+          {{ form.errors | default_errors }}
+        {% endif %}
+      {% endform %}
+    </div>
   </div>
 
-  <div class="footer__links">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
-  </div>
-
-  <div class="footer__payment">
-    {% if section.settings.show_payment_icons %}
-      {% for type in shop.enabled_payment_types %}
-        {{ type | payment_type_svg_tag }}
-      {% endfor %}
+  <div class="site-footer__bottom">
+    {% if section.settings.show_follow_on_shop %}
+      {{ shop | login_button: action: 'follow' }}
     {% endif %}
+
+    {% if section.settings.show_payment_icons %}
+      <div class="site-footer__payments">
+        {% for type in shop.enabled_payment_types %}
+          {{ type | payment_type_svg_tag }}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="site-footer__copyright">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</p>
+      <p>{{ powered_by_link }}</p>
+    </div>
   </div>
 </footer>
 
 {% stylesheet %}
-  footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 2rem;
+  .site-footer {
+    margin-top: var(--section-spacing);
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+    color: var(--color-surface-foreground);
+    padding-block: 2rem;
   }
-  footer a {
+
+  .site-footer__content {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .site-footer__heading {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .site-footer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .site-footer__list a {
     text-decoration: none;
-    color: var(--color-foreground);
   }
-  footer .footer__links,
-  footer .footer__payment {
+
+  .site-footer__newsletter {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .site-footer__newsletter button {
+    width: fit-content;
+  }
+
+  .site-footer__bottom {
+    margin-top: 2rem;
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .site-footer__payments {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .site-footer__payments svg {
+    width: 2.2rem;
+    height: auto;
+  }
+
+  .site-footer__copyright {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    align-items: center;
+    font-size: 0.9rem;
+  }
+
+  .site-footer__copyright a {
+    text-decoration: none;
+  }
+
+  @media (max-width: 989px) {
+    .site-footer__content {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .site-footer__content {
+      grid-template-columns: 1fr;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.footer",
+  "name": "Footer",
+  "class": "section-footer",
   "settings": [
+    {
+      "type": "text",
+      "id": "brand_message",
+      "label": "Brand message",
+      "default": "Built for bold catalogs, trend drops, and fast-moving fashion stories."
+    },
     {
       "type": "link_list",
       "id": "menu",
-      "label": "t:labels.menu"
+      "label": "Footer menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Stay in the loop"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_icons",
+      "label": "Show social media icons",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_follow_on_shop",
+      "label": "Show Follow on Shop button",
+      "default": true
     },
     {
       "type": "checkbox",
       "id": "show_payment_icons",
-      "label": "t:labels.show_payment_icons",
+      "label": "Show payment method icons",
       "default": true
     }
   ]

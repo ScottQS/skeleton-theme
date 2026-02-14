@@ -1,20 +1,114 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "inventory": {
+          "type": "inventory",
+          "settings": {}
+        },
+        "size_chart": {
+          "type": "size_chart",
+          "settings": {
+            "page": ""
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "selling_plan": {
+          "type": "selling_plan",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "pickup": {
+          "type": "pickup_availability",
+          "settings": {}
+        },
+        "tax_shipping": {
+          "type": "tax_and_shipping",
+          "settings": {}
+        },
+        "gift_card_recipient": {
+          "type": "gift_card_recipient",
+          "settings": {}
+        },
+        "shop_pay_installments": {
+          "type": "shop_pay_installments",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "inventory",
+        "size_chart",
+        "variant_picker",
+        "quantity",
+        "selling_plan",
+        "buy_buttons",
+        "pickup",
+        "tax_shipping",
+        "gift_card_recipient",
+        "shop_pay_installments",
+        "description"
+      ],
       "settings": {}
+    },
+    "related_products": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "Related products",
+        "subheading": "Customers also viewed these styles.",
+        "intent": "related",
+        "products_to_show": 4
+      }
+    },
+    "complementary_products": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "Pairs well with",
+        "subheading": "Complete the look with complementary picks.",
+        "intent": "complementary",
+        "products_to_show": 4
+      }
+    },
+    "custom_liquid": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": ""
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "related_products",
+    "complementary_products",
+    "custom_liquid"
   ]
 }

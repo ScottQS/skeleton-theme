@@ -1,0 +1,178 @@
+{% liquid
+  assign alignment_class = section.settings.content_alignment
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+%}
+
+<section class="hero-banner full-width {{ alignment_class }}">
+  {% if section.settings.image != blank %}
+    {{
+      section.settings.image
+      | image_url: width: 2800
+      | image_tag:
+        widths: '600,900,1200,1500,1800,2200,2800',
+        sizes: '100vw',
+        class: 'hero-banner__image',
+        loading: 'eager',
+        alt: section.settings.image.alt
+    }}
+  {% else %}
+    {{ 'lifestyle-1' | placeholder_svg_tag: 'hero-banner__placeholder' }}
+  {% endif %}
+
+  <div class="hero-banner__overlay" style="--overlay-opacity: {{ overlay_opacity }};"></div>
+
+  <div class="hero-banner__content">
+    {% if section.settings.kicker != blank %}
+      <p class="hero-banner__kicker">{{ section.settings.kicker }}</p>
+    {% endif %}
+    {% if section.settings.heading != blank %}
+      <h1>{{ section.settings.heading }}</h1>
+    {% endif %}
+    {% if section.settings.body != blank %}
+      <div class="rte">{{ section.settings.body }}</div>
+    {% endif %}
+    {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+      <a class="button button--primary" href="{{ section.settings.button_link }}">
+        {{ section.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .hero-banner {
+    position: relative;
+    min-height: clamp(26rem, 68vw, 42rem);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    color: #fff;
+    margin-bottom: calc(var(--section-spacing) * 0.75);
+  }
+
+  .hero-banner__image,
+  .hero-banner__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-banner__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgb(0 0 0 / calc(var(--overlay-opacity) * 0.75)),
+      rgb(0 0 0 / var(--overlay-opacity))
+    );
+  }
+
+  .hero-banner__content {
+    position: relative;
+    z-index: 1;
+    width: min(44rem, calc(100% - 3rem));
+    display: grid;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  .hero-banner__kicker {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  .hero-banner--center .hero-banner__content {
+    text-align: center;
+    justify-items: center;
+  }
+
+  .hero-banner--right .hero-banner__content {
+    text-align: right;
+    justify-items: end;
+  }
+
+  .hero-banner .button {
+    width: fit-content;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker text",
+      "default": "New collection"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Streetwear for every shift."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body text",
+      "default": "<p>Highlight limited drops, capsule collections, and core bestsellers with a bold storefront experience.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop latest drops"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "hero-banner--left",
+          "label": "Left"
+        },
+        {
+          "value": "hero-banner--center",
+          "label": "Center"
+        },
+        {
+          "value": "hero-banner--right",
+          "label": "Right"
+        }
+      ],
+      "default": "hero-banner--left"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 35,
+      "unit": "%"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero banner"
+    }
+  ]
+}
+{% endschema %}

@@ -1,36 +1,13 @@
-{% doc %}
-  Renders a responsive image that might be wrapped in a link.
-
-  When `width`, `height` and `crop` are provided, the image will be rendered
-  with a fixed aspect ratio.
-
-  Serves as an example of how to use the `image_url` filter and `image_tag` filter
-  as well as how you can use LiquidDoc to document your code.
-
-  @param {image} image - The image to be rendered
-  @param {string} [url] - An optional destination URL for the image
-  @param {string} [class] - Optional class to be added to the image wrapper
-  @param {number} [width] - The highest resolution width of the image to be rendered
-  @param {number} [height] - The highest resolution height of the image to be rendered
-  @param {string} [crop] - The crop position of the image
-
-  @example
-  {% render 'image', image: product.featured_image %}
-  {% render 'image', image: product.featured_image, url: product.url %}
-  {% render 'image',
-    class: 'product__image',
-    image: product.featured_image,
-    url: product.url,
-    width: 1200,
-    height: 800,
-    crop: 'center',
-  %}
-{% enddoc %}
-
 {% liquid
-  unless height
-    assign width = width | default: image.width
-  endunless
+  if image == blank
+    break
+  endif
+
+  assign image_width = width | default: image.width
+  assign image_height = height
+  assign image_sizes = sizes | default: '100vw'
+  assign image_loading = loading | default: 'lazy'
+  assign image_alt = image.alt | default: ''
 
   if url
     assign wrapper = 'a'
@@ -45,19 +22,24 @@
     href="{{ url }}"
   {% endif %}
 >
-  {{ image | image_url: width: width, height: height, crop: crop | image_tag }}
+  {{
+    image
+    | image_url: width: image_width, height: image_height, crop: crop
+    | image_tag:
+      widths: '240,360,480,720,960,1200,1440,1680,1920',
+      sizes: image_sizes,
+      loading: image_loading,
+      alt: image_alt
+  }}
 </{{ wrapper }}>
 
 {% stylesheet %}
   .image {
     display: block;
-    position: relative;
-    overflow: hidden;
     width: 100%;
-    height: auto;
   }
 
-  .image > img {
+  .image img {
     width: 100%;
     height: auto;
   }

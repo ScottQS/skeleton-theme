@@ -1,0 +1,273 @@
+{% liquid
+  assign featured_product = all_products[section.settings.product]
+  assign form_id = 'FeaturedProductForm-' | append: section.id
+%}
+
+<section class="section-shell featured-product">
+  {% if featured_product == blank %}
+    <div class="empty-state">
+      <p>Select a product to display this section.</p>
+    </div>
+  {% else %}
+    <div class="featured-product__grid" data-product-root data-media-behavior="single">
+      <div class="featured-product__media">
+        {% for media in featured_product.media %}
+          <div data-media-id="{{ media.id }}">
+            {% case media.media_type %}
+              {% when 'image' %}
+                {% render
+                  'image',
+                  image: media.preview_image,
+                  width: 1400,
+                  sizes: '(min-width: 990px) 50vw, 100vw',
+                  class: 'featured-product__image'
+                %}
+              {% when 'external_video' %}
+                {{ media | external_video_tag: class: 'featured-product__video', loading: 'lazy' }}
+              {% when 'video' %}
+                {{ media | video_tag: controls: true, class: 'featured-product__video' }}
+              {% when 'model' %}
+                {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'featured-product__model' }}
+            {% endcase %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="featured-product__details">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'title' %}
+              <h2 {{ block.shopify_attributes }}>{{ featured_product.title }}</h2>
+            {% when 'price' %}
+              <div {{ block.shopify_attributes }}>
+                <div class="price">
+                  <span data-product-price>
+                    {{ featured_product.selected_or_first_available_variant.price | money }}
+                  </span>
+                  <s
+                    class="price--compare"
+                    data-product-compare
+                    {% unless featured_product.selected_or_first_available_variant.compare_at_price
+                      > featured_product.selected_or_first_available_variant.price
+                    %}
+                      hidden
+                    {% endunless %}
+                  >
+                    {{ featured_product.selected_or_first_available_variant.compare_at_price | money }}
+                  </s>
+                </div>
+                {% render 'price', variant: featured_product.selected_or_first_available_variant, show_unit_price: true %}
+              </div>
+            {% when 'description' %}
+              <div class="rte" {{ block.shopify_attributes }}>
+                {{ featured_product.description }}
+              </div>
+            {% when '@app' %}
+              <div {{ block.shopify_attributes }}>
+                {% render block %}
+              </div>
+            {% when 'custom_liquid' %}
+              <div {{ block.shopify_attributes }}>
+                {{ block.settings.custom_liquid }}
+              </div>
+          {% endcase %}
+        {% endfor %}
+
+        {% form 'product', featured_product, id: form_id, class: 'featured-product__form' %}
+          <input
+            type="hidden"
+            name="id"
+            value="{{ featured_product.selected_or_first_available_variant.id }}"
+          >
+
+          {% if featured_product.has_only_default_variant == false %}
+            {% for option in featured_product.options_with_values %}
+              <label for="FeaturedProduct-{{ section.id }}-{{ option.position }}">
+                {{ option.name }}
+              </label>
+              <select
+                id="FeaturedProduct-{{ section.id }}-{{ option.position }}"
+                data-option-input
+                data-option-position="{{ option.position }}"
+              >
+                {% for value in option.values %}
+                  <option
+                    value="{{ value | escape }}"
+                    {% if value == option.selected_value %}
+                      selected
+                    {% endif %}
+                  >
+                    {{ value }}
+                  </option>
+                {% endfor %}
+              </select>
+            {% endfor %}
+          {% endif %}
+
+          {% if featured_product.selling_plan_groups.size > 0 %}
+            <label for="FeaturedProductSellingPlan-{{ section.id }}">Purchase options</label>
+            <select id="FeaturedProductSellingPlan-{{ section.id }}" name="selling_plan">
+              <option value="">One-time purchase</option>
+              {% for group in featured_product.selling_plan_groups %}
+                {% for selling_plan in group.selling_plans %}
+                  <option value="{{ selling_plan.id }}">{{ selling_plan.name }}</option>
+                {% endfor %}
+              {% endfor %}
+            </select>
+          {% endif %}
+
+          <label for="FeaturedProductQuantity-{{ section.id }}">Quantity</label>
+          <input id="FeaturedProductQuantity-{{ section.id }}" type="number" name="quantity" min="1" value="1">
+
+          <p data-product-availability>
+            {% if featured_product.selected_or_first_available_variant.available %}
+              In stock
+            {% else %}
+              Sold out
+            {% endif %}
+          </p>
+
+          <button
+            class="button button--primary"
+            type="submit"
+            name="add"
+            data-add-to-cart
+            {% unless featured_product.selected_or_first_available_variant.available %}
+              disabled
+            {% endunless %}
+          >
+            {% if featured_product.selected_or_first_available_variant.available %}
+              Add to cart
+            {% else %}
+              Sold out
+            {% endif %}
+          </button>
+          {{ form | payment_button }}
+          {{ form | payment_terms }}
+        {% endform %}
+      </div>
+    </div>
+
+    <script type="application/json" data-product-variants>
+      [
+        {% for variant in featured_product.variants %}
+          {
+            "id": {{ variant.id }},
+            "available": {{ variant.available | json }},
+            "options": {{ variant.options | json }},
+            "price": {{ variant.price | json }},
+            "compare_at_price": {{ variant.compare_at_price | default: 0 | json }},
+            "price_formatted": {{ variant.price | money | json }},
+            "compare_at_price_formatted": {{ variant.compare_at_price | money | json }},
+            "featured_media_id": {{ variant.featured_media.id | default: 0 | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    </script>
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .featured-product__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .featured-product__media {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .featured-product__media img,
+  .featured-product__video,
+  .featured-product__model {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 0.9rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .featured-product__details {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+  }
+
+  .featured-product__form {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .featured-product__form .shopify-payment-button {
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 899px) {
+    .featured-product__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Featured product",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom liquid"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured product",
+      "blocks": [
+        {
+          "type": "title"
+        },
+        {
+          "type": "price"
+        },
+        {
+          "type": "description"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

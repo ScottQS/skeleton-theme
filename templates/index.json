@@ -1,20 +1,121 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "kicker": "Rivet studio",
+        "heading": "Urban apparel built for movement.",
+        "body": "<p>Launch capsule drops, style edits, and accessories with layouts made for visual impact and fast conversion.</p>",
+        "button_label": "Shop collection",
+        "button_link": "",
+        "content_alignment": "hero-banner--left",
+        "overlay_opacity": 35
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Street essentials",
+        "subheading": "Feature evergreen favorites and high-velocity products.",
+        "collection": "",
+        "products_to_show": 8,
+        "show_view_all": true
+      }
+    },
+    "featured_product": {
+      "type": "featured-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "description"
+      ],
+      "settings": {
+        "product": ""
+      }
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "blocks": {
+        "look_one": {
+          "type": "look",
+          "settings": {
+            "eyebrow": "Night edit",
+            "heading": "Monochrome layers",
+            "product": "",
+            "body": "Pair technical outerwear with relaxed silhouettes and tonal accessories.",
+            "link": ""
+          }
+        },
+        "look_two": {
+          "type": "look",
+          "settings": {
+            "eyebrow": "Weekend drop",
+            "heading": "Off-duty utility",
+            "product": "",
+            "body": "Use image-led storytelling to connect inspiration to featured products.",
+            "link": ""
+          }
+        },
+        "look_three": {
+          "type": "look",
+          "settings": {
+            "eyebrow": "Core uniform",
+            "heading": "Everyday staples",
+            "product": "",
+            "body": "Highlight repeat-purchase essentials for reliable conversion volume.",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "look_one",
+        "look_two",
+        "look_three"
+      ],
+      "settings": {
+        "heading": "Style lookbook",
+        "subheading": "Image-first merchandising inspired by premium fashion themes."
+      }
+    },
+    "editorial_content": {
+      "type": "editorial-content",
+      "settings": {
+        "eyebrow": "Behind the drop",
+        "heading": "Tell your collection story with editorial depth.",
+        "body": "<p>Bring premium storytelling to your home page with rich text, photography, and a clear path to shop.</p>",
+        "button_label": "Read journal",
+        "button_link": "",
+        "media_position": "editorial-content--media-left"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Get first access to upcoming drops",
+        "subheading": "Build anticipation with release dates, loyalty perks, and restock updates."
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "featured_collection",
+    "featured_product",
+    "lookbook",
+    "editorial_content",
+    "newsletter"
   ]
 }

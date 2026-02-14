@@ -1,68 +1,123 @@
-{% comment %}
-  This section is used in the article template to render the article page, which
-  displays the full content of the blog post and can optionally include a
-  comments section for customers (not shown in this example).
+<article class="section-shell article-page">
+  {% if article.image %}
+    {% render
+      'image',
+      image: article.image,
+      width: 2000,
+      class: 'article-page__hero',
+      sizes: '100vw'
+    %}
+  {% endif %}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/article
-{% endcomment %}
+  <header class="article-page__header">
+    <h1>{{ article.title }}</h1>
+    <p>{{ article.published_at | time_tag: format: 'date' }} by {{ article.author }}</p>
+    <p>{{ article.comments_count }} comments</p>
+  </header>
 
-{% if article.image %}
-  {{ article.image | image_url: width: 1000 | image_tag }}
-{% endif %}
-
-<h1>{{ article.title }}</h1>
-
-{% assign date = article.published_at | time_tag: format: 'date' %}
-<p>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</p>
-
-{{ article.content }}
-
-{% if blog.comments_enabled? %}
-  <h2>{{ 'blog.article_comments' | t }}</h2>
-
-  <div id="comments">
-    {% paginate article.comments by 10 %}
-      {% for comment in article.comments %}
-        <div>
-          <p>{{ comment.author }}</p>
-          <p>
-            {{- comment.created_at | time_tag: format: 'date' -}}
-          </p>
-          <p>{{ comment.content }}</p>
-        </div>
-      {% endfor %}
-
-      {{ paginate | default_pagination: anchor: 'comments' }}
-    {% endpaginate %}
+  <div class="rte article-page__content">
+    {{ article.content }}
   </div>
 
-  {% form 'new_comment', article %}
-    <h2>{{ 'blog.comment_form_title' | t }}</h2>
+  {% if blog.comments_enabled? %}
+    <section class="article-page__comments" id="comments">
+      <h2>Comments</h2>
 
-    {{ form.errors | default_errors }}
+      {% paginate article.comments by 10 %}
+        {% if article.comments_count > 0 %}
+          <ul role="list" class="article-page__comments-list">
+            {% for comment in article.comments %}
+              <li class="card article-page__comment">
+                <div class="card__content">
+                  <p><strong>{{ comment.author }}</strong></p>
+                  <p>{{ comment.created_at | time_tag: format: 'date' }}</p>
+                  <p>{{ comment.content }}</p>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
 
-    <div>
-      <label for="author">{{ 'blog.comment_form_name' | t }}</label>
-      <input type="text" name="comment[author]" id="author" value="{{ form.author }}" required>
-    </div>
+        {% if paginate.pages > 1 %}
+          <nav class="pagination" role="navigation" aria-label="Comments pagination">
+            {{ paginate | default_pagination: anchor: 'comments' }}
+          </nav>
+        {% endif %}
+      {% endpaginate %}
 
-    <div>
-      <label for="email">{{ 'blog.comment_form_email' | t }}</label>
-      <input type="email" name="comment[email]" id="email" value="{{ form.email }}" required>
-    </div>
+      {% form 'new_comment', article, class: 'article-page__comment-form card' %}
+        <div class="card__content">
+          <h3>Leave a comment</h3>
 
-    <div>
-      <label for="body">{{ 'blog.comment_form_body' | t }}</label>
-      <textarea name="comment[body]" id="body" required>{{ form.body }}</textarea>
-    </div>
+          {% if form.posted_successfully? %}
+            <p>Your comment was posted successfully.</p>
+          {% endif %}
 
-    <input type="submit" value="{{ 'blog.comment_form_submit' | t }}">
-  {% endform %}
-{% endif %}
+          {{ form.errors | default_errors }}
+
+          <label for="CommentAuthor-{{ section.id }}">Name</label>
+          <input
+            id="CommentAuthor-{{ section.id }}"
+            type="text"
+            name="comment[author]"
+            value="{{ form.author }}"
+            required
+          >
+
+          <label for="CommentEmail-{{ section.id }}">Email</label>
+          <input
+            id="CommentEmail-{{ section.id }}"
+            type="email"
+            name="comment[email]"
+            value="{{ form.email }}"
+            required
+          >
+
+          <label for="CommentBody-{{ section.id }}">Comment</label>
+          <textarea id="CommentBody-{{ section.id }}" name="comment[body]" required>{{ form.body }}</textarea>
+
+          <button class="button button--primary" type="submit">Post comment</button>
+        </div>
+      {% endform %}
+    </section>
+  {% endif %}
+</article>
+
+{% stylesheet %}
+  .article-page__hero img {
+    width: 100%;
+    max-height: 34rem;
+    object-fit: cover;
+    border-radius: 1rem;
+  }
+
+  .article-page__header {
+    margin-block: 1.1rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .article-page__content {
+    margin-bottom: 1.6rem;
+  }
+
+  .article-page__comments-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .article-page__comment-form .card__content {
+    display: grid;
+    gap: 0.5rem;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.article",
+  "name": "Main article",
   "settings": []
 }
 {% endschema %}

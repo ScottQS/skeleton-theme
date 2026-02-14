@@ -1,0 +1,60 @@
+{% liquid
+  assign has_social_links = false
+  if settings.social_instagram != blank
+    assign has_social_links = true
+  elsif settings.social_tiktok != blank
+    assign has_social_links = true
+  elsif settings.social_facebook != blank
+    assign has_social_links = true
+  elsif settings.social_youtube != blank
+    assign has_social_links = true
+  elsif settings.social_pinterest != blank
+    assign has_social_links = true
+  endif
+%}
+
+{% if has_social_links %}
+  <ul class="social-icons" role="list">
+    {% if settings.social_instagram != blank %}
+      <li><a href="{{ settings.social_instagram }}" aria-label="Instagram">IG</a></li>
+    {% endif %}
+    {% if settings.social_tiktok != blank %}
+      <li><a href="{{ settings.social_tiktok }}" aria-label="TikTok">TT</a></li>
+    {% endif %}
+    {% if settings.social_facebook != blank %}
+      <li><a href="{{ settings.social_facebook }}" aria-label="Facebook">FB</a></li>
+    {% endif %}
+    {% if settings.social_youtube != blank %}
+      <li><a href="{{ settings.social_youtube }}" aria-label="YouTube">YT</a></li>
+    {% endif %}
+    {% if settings.social_pinterest != blank %}
+      <li><a href="{{ settings.social_pinterest }}" aria-label="Pinterest">PT</a></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% stylesheet %}
+  .social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0.25rem 0.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: var(--color-surface);
+  }
+{% endstylesheet %}

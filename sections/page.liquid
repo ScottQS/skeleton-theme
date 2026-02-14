@@ -1,17 +1,23 @@
-{% comment %}
-  This section is used in the page template to render store pages like About us
-  or Contact us.
+<section class="section-shell page-section">
+  {% if section.settings.show_title %}
+    <h1>{{ page.title }}</h1>
+  {% endif %}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
-{% endcomment %}
-
-<h1>{{ page.title }}</h1>
-
-{{ page.content }}
+  <div class="rte">
+    {{ page.content }}
+  </div>
+</section>
 
 {% schema %}
 {
-  "name": "t:general.page",
-  "settings": []
+  "name": "Main page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show page heading",
+      "default": true
+    }
+  ]
 }
 {% endschema %}

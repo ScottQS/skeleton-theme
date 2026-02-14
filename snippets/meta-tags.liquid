@@ -8,6 +8,16 @@
   assign og_type = 'website'
   assign og_description = page_description | default: shop.description | default: shop.name
 
+  if page_image == blank
+    if request.page_type == 'product' and product.featured_media
+      assign page_image = product.featured_media.preview_image
+    elsif request.page_type == 'collection' and collection.featured_image
+      assign page_image = collection.featured_image
+    elsif request.page_type == 'article' and article.image
+      assign page_image = article.image
+    endif
+  endif
+
   if request.page_type == 'product'
     assign og_type = 'product'
   elsif request.page_type == 'article'
@@ -39,13 +49,14 @@
 >
 
 {%- if page_image -%}
+  {%- assign og_image_url = page_image | image_url -%}
   <meta
     property="og:image"
-    content="http:{{ page_image | image_url }}"
+    content="{{ og_image_url }}"
   >
   <meta
     property="og:image:secure_url"
-    content="https:{{ page_image | image_url }}"
+    content="{{ og_image_url }}"
   >
   <meta
     property="og:image:width"
@@ -54,6 +65,10 @@
   <meta
     property="og:image:height"
     content="{{ page_image.height }}"
+  >
+  <meta
+    name="twitter:image"
+    content="{{ og_image_url }}"
   >
 {%- endif -%}
 
@@ -70,6 +85,12 @@
     property="og:price:currency"
     content="{{ cart.currency.iso_code }}"
   >
+{%- endif -%}
+
+{%- if request.page_type == 'article' -%}
+  <script type="application/ld+json">
+    {{ article | structured_data }}
+  </script>
 {%- endif -%}
 
 <meta

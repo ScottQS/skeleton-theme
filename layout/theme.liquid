@@ -10,11 +10,15 @@
       2. Preload only the critical font variant (base weight)
       3. Additional variants load on-demand via @font-face
     {% endcomment %}
-    {% unless settings.type_primary_font.system? %}
+    {% if settings.type_heading_font.system? == false or settings.type_body_font.system? == false %}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {% endif %}
 
-      {% comment %} Preload the base font variant for initial page render {% endcomment %}
-      {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {% unless settings.type_heading_font.system? %}
+      {{ settings.type_heading_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {% endunless %}
+    {% unless settings.type_body_font.system? %}
+      {{ settings.type_body_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
     {% endunless %}
 
     {% # Load and preload the critical CSS %}
@@ -23,14 +27,24 @@
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
 
+    {% if settings.favicon != blank %}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {% endif %}
+
     {{ content_for_header }}
   </head>
 
   <body>
+    <a class="skip-to-content-link" href="#MainContent">Skip to content</a>
+
     {% sections 'header-group' %}
 
-    {{ content_for_layout }}
+    <main id="MainContent" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
 
     {% sections 'footer-group' %}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
   </body>
 </html>

@@ -1,38 +1,42 @@
-{% comment %}
-  This section is used in the list-collections template to render a list of
-  collections.
+<section class="section-shell">
+  <h1>Collections</h1>
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
-{% endcomment %}
+  {% paginate collections by section.settings.collections_per_page %}
+    <div
+      class="collections {{ section.settings.grid_item_width }}"
+      style="--grid-gap: {{ section.settings.grid_gap }}px"
+    >
+      {% for collection in collections %}
+        <a class="collection-card card" href="{{ collection.url }}">
+          {% if collection.featured_image %}
+            {% render
+              'image',
+              class: 'collection-card__image',
+              image: collection.featured_image,
+              width: 1000,
+              height: 1000,
+              crop: 'center',
+              sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw'
+            %}
+          {% endif %}
 
-<h1>{{ 'collections.title' | t }}</h1>
+          <div class="collection-card__content card__content">
+            <h2>{{ collection.title }}</h2>
+            {% if collection.description %}
+              <p>{{ collection.description | strip_html | truncatewords: 18 }}</p>
+            {% endif %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
 
-<div
-  class="collections {{ section.settings.grid_item_width }}"
-  style="--grid-gap: {{ section.settings.grid_gap }}px"
->
-  {% for collection in collections %}
-    <a class="collection-card" href="{{ collection.url }}">
-      {% if collection.featured_image %}
-        {% render 'image',
-          class: 'collection-card__image',
-          image: collection.featured_image,
-          width: 600,
-          height: 600,
-          crop: 'center'
-        %}
-      {% endif %}
-
-      <div class="collection-card__content">
-        <p>{{ collection.title }}</p>
-
-        {% if collection.description %}
-          <p>{{ collection.description | strip_html | truncatewords: 15 }}</p>
-        {% endif %}
-      </div>
-    </a>
-  {% endfor %}
-</div>
+    {% if paginate.pages > 1 %}
+      <nav class="pagination" role="navigation" aria-label="Pagination">
+        {{ paginate | default_pagination }}
+      </nav>
+    {% endif %}
+  {% endpaginate %}
+</section>
 
 {% stylesheet %}
   .collections {
@@ -40,44 +44,65 @@
     grid-template-columns: repeat(auto-fill, minmax(min(var(--collection-card-size), 100%), 1fr));
     gap: var(--grid-gap);
   }
+
   .collections--compact {
-    --collection-card-size: 160px;
+    --collection-card-size: 180px;
   }
+
   .collections--full {
-    --collection-card-size: 280px;
+    --collection-card-size: 300px;
   }
+
   .collection-card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+    text-decoration: none;
+    color: inherit;
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.collections_grid",
+  "name": "Collection list",
   "settings": [
     {
       "type": "select",
       "id": "grid_item_width",
-      "label": "t:labels.grid_item_width",
+      "label": "Grid item width",
       "options": [
-        { "value": "collections--compact", "label": "t:options.size.small" },
-        { "value": "collections--full", "label": "t:options.size.large" }
+        {
+          "value": "collections--compact",
+          "label": "Compact"
+        },
+        {
+          "value": "collections--full",
+          "label": "Large"
+        }
       ],
       "default": "collections--full"
     },
     {
       "type": "range",
       "id": "grid_gap",
-      "label": "t:labels.grid_gap",
-      "min": 0,
-      "max": 50,
-      "step": 5,
+      "label": "Grid gap",
+      "min": 8,
+      "max": 40,
+      "step": 4,
       "unit": "px",
-      "default": 10
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "label": "Collections per page",
+      "min": 6,
+      "max": 24,
+      "step": 3,
+      "default": 12
     }
   ],
-  "presets": [{ "name": "t:general.collections_grid" }]
+  "presets": [
+    {
+      "name": "Collection list"
+    }
+  ]
 }
 {% endschema %}

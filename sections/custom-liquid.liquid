@@ -1,0 +1,23 @@
+<section class="section-shell">
+  {% if section.settings.custom_liquid != blank %}
+    {{ section.settings.custom_liquid }}
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Custom liquid",
+  "settings": [
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom liquid"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom liquid"
+    }
+  ]
+}
+{% endschema %}
