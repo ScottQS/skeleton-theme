@@ -27,7 +27,7 @@
       "settings": {
         "heading": "Street essentials",
         "subheading": "Feature evergreen favorites and high-velocity products.",
-        "collection": "",
+        "collection": "automated-collection",
         "products_to_show": 8,
         "show_view_all": true
       }
@@ -54,7 +54,7 @@
         "description"
       ],
       "settings": {
-        "product": ""
+        "product": "the-complete-snowboard"
       }
     },
     "lookbook": {
