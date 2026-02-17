@@ -86,9 +86,9 @@
 
 {% stylesheet %}
   .site-header {
-    border-bottom: 1px solid var(--color-border);
-    background-color: var(--color-surface);
-    color: var(--color-surface-foreground);
+    border-bottom: 0;
+    background-color: #fff;
+    color: #121212;
   }
 
   .site-header__inner {
@@ -96,8 +96,8 @@
     grid-template-columns: auto 1fr auto;
     gap: 1rem;
     align-items: center;
-    min-height: 5rem;
-    padding-block: 0.65rem;
+    min-height: 4.5rem;
+    padding-block: 0.5rem;
   }
 
   .site-header__brand {
@@ -264,26 +264,30 @@
     .site-header__inner {
       grid-template-columns: 1fr auto;
       row-gap: 0.8rem;
-      padding-block: 0.8rem;
+      padding-block: 0.6rem;
     }
 
     .site-header__brand {
+      grid-column: 1 / -1;
+    }
+
+    .site-nav {
       grid-column: 1 / 2;
+      overflow-x: auto;
+      min-width: 0;
     }
 
     .site-header__actions {
       grid-column: 2 / 3;
-    }
-
-    .site-nav {
-      grid-column: 1 / -1;
-      overflow-x: auto;
+      justify-self: end;
+      align-self: center;
     }
 
     .site-nav__list {
       justify-content: flex-start;
       width: max-content;
-      padding-bottom: 0.25rem;
+      padding-bottom: 0;
+      gap: 1rem;
     }
 
     .predictive-search {
