@@ -107,6 +107,7 @@
     "editorial_content": {
       "type": "editorial-content",
       "settings": {
+        "image": "shopify://shop_images/IMG_5460.jpg",
         "eyebrow": "Behind the drop",
         "heading": "Tell your collection story with editorial depth.",
         "body": "<p>Bring premium storytelling to your home page with rich text, photography, and a clear path to shop.</p>",
