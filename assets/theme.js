@@ -2,7 +2,6 @@
   const selectors = {
     productForm: '.product-section__form, .featured-product__form',
     predictiveSearch: '[data-predictive-search]',
-    localizationForm: '.site-localization',
   };
 
   const parseJSON = (node) => {
@@ -257,16 +256,9 @@
       .forEach((container) => new PredictiveSearchController(container));
   };
 
-  const initLocalizationForms = () => {
-    document.querySelectorAll(selectors.localizationForm).forEach((form) => {
-      form.addEventListener('change', () => form.submit());
-    });
-  };
-
   document.addEventListener('DOMContentLoaded', () => {
     initProductForms();
     initPredictiveSearch();
     initProductRecommendations();
-    initLocalizationForms();
   });
 })();

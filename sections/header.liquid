@@ -82,44 +82,6 @@
     </div>
   </div>
 
-  {% if section.settings.show_country_selector or section.settings.show_language_selector %}
-    {% form 'localization', id: 'HeaderLocalizationForm', class: 'site-localization' %}
-      {% if section.settings.show_country_selector and localization.available_countries.size > 1 %}
-        <label for="HeaderCountry">Country and region</label>
-        <select id="HeaderCountry" name="country_code">
-          {% for country in localization.available_countries %}
-            <option
-              value="{{ country.iso_code }}"
-              {% if country.iso_code == localization.country.iso_code %}
-                selected
-              {% endif %}
-            >
-              {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
-            </option>
-          {% endfor %}
-        </select>
-      {% endif %}
-
-      {% if section.settings.show_language_selector and localization.available_languages.size > 1 %}
-        <label for="HeaderLanguage">Language</label>
-        <select id="HeaderLanguage" name="locale_code">
-          {% for language in localization.available_languages %}
-            <option
-              value="{{ language.iso_code }}"
-              lang="{{ language.iso_code }}"
-              {% if language.iso_code == localization.language.iso_code %}
-                selected
-              {% endif %}
-            >
-              {{ language.endonym_name | capitalize }}
-            </option>
-          {% endfor %}
-        </select>
-      {% endif %}
-
-      <button class="button button--secondary" type="submit">Update</button>
-    {% endform %}
-  {% endif %}
 </header>
 
 {% stylesheet %}
@@ -298,22 +260,6 @@
     padding: 0.45rem;
   }
 
-  .site-localization {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding-bottom: 0.8rem;
-    align-items: center;
-  }
-
-  .site-localization label {
-    font-size: 0.85rem;
-  }
-
-  .site-localization select {
-    min-width: 11rem;
-  }
-
   @media (max-width: 989px) {
     .site-header__inner {
       grid-template-columns: 1fr auto;
@@ -353,10 +299,6 @@
     .predictive-search {
       display: none;
     }
-
-    .site-localization button {
-      width: auto;
-    }
   }
 {% endstylesheet %}
 
@@ -375,18 +317,6 @@
       "type": "checkbox",
       "id": "show_search",
       "label": "Show search input",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_country_selector",
-      "label": "Show country and region selector",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_language_selector",
-      "label": "Show language selector",
       "default": true
     }
   ]

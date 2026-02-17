@@ -6,9 +6,7 @@
       "type": "header",
       "settings": {
         "menu": "main-menu",
-        "show_search": true,
-        "show_country_selector": true,
-        "show_language_selector": true
+        "show_search": true
       }
     }
   },
