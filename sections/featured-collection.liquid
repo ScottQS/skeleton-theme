@@ -14,7 +14,7 @@
   </div>
 
   {% if featured_collection != blank %}
-    <div class="featured-collection-grid">
+    <div class="featured-collection-grid featured-collection-grid--mobile-{{ section.settings.mobile_columns }}">
       {% for product in featured_collection.products limit: products_to_show %}
         {% render 'product-card', product: product %}
       {% endfor %}
@@ -50,8 +50,16 @@
   }
 
   @media (max-width: 540px) {
-    .featured-collection-grid {
+    .featured-collection-grid--mobile-1 {
       grid-template-columns: 1fr;
+    }
+
+    .featured-collection-grid--mobile-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .featured-collection-grid > *:nth-child(n + {{ section.settings.mobile_products_to_show | plus: 1 }}) {
+      display: none;
     }
   }
 {% endstylesheet %}
@@ -85,6 +93,31 @@
       "max": 12,
       "step": 1,
       "default": 8
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "mobile_products_to_show",
+      "label": "Mobile products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 6
     },
     {
       "type": "checkbox",

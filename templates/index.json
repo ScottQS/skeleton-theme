@@ -29,6 +29,8 @@
         "subheading": "Feature evergreen favorites and high-velocity products.",
         "collection": "automated-collection",
         "products_to_show": 8,
+        "mobile_columns": "2",
+        "mobile_products_to_show": 6,
         "show_view_all": true
       }
     },
