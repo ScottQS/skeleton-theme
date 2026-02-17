@@ -74,6 +74,7 @@
         "look_two": {
           "type": "look",
           "settings": {
+            "image": "shopify://shop_images/IMG_5460.jpg",
             "eyebrow": "Weekend drop",
             "heading": "Off-duty utility",
             "product": "",
