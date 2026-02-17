@@ -3,7 +3,7 @@
   assign logo_width_mobile = settings.logo_width_mobile | default: 130
 %}
 
-<header class="site-header">
+<header class="site-header{% if request.page_type == 'index' %} site-header--overlay{% endif %}">
   <div class="site-header__inner">
     <a class="site-header__brand" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
       {% if settings.logo %}
@@ -89,6 +89,8 @@
     border-bottom: 0;
     background-color: transparent;
     color: var(--color-foreground);
+    position: relative;
+    z-index: 25;
   }
 
   .site-header__inner {
@@ -209,6 +211,37 @@
     display: none;
   }
 
+  .site-header--overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #fff;
+  }
+
+  .site-header--overlay .site-nav a,
+  .site-header--overlay .site-header__brand,
+  .site-header--overlay .site-header__icon-link {
+    color: #fff;
+  }
+
+  .site-header--overlay .site-header__icon-link svg path,
+  .site-header--overlay .site-header__icon-link svg circle,
+  .site-header--overlay .site-header__icon-link svg rect {
+    fill: #fff;
+    stroke: #fff;
+  }
+
+  .site-header--overlay .site-nav__submenu {
+    background: rgb(0 0 0 / 85%);
+    border-color: rgb(255 255 255 / 25%);
+  }
+
+  .site-header--overlay .site-header__cart-count {
+    background-color: #fff;
+    color: #121212;
+  }
+
   .predictive-search {
     position: relative;
     width: min(20rem, 40vw);
@@ -302,6 +335,10 @@
   @media (max-width: 749px) {
     .predictive-search {
       display: none;
+    }
+
+    .site-header--overlay .site-header__inner {
+      min-height: 4rem;
     }
   }
 {% endstylesheet %}
