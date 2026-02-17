@@ -63,6 +63,7 @@
         "look_one": {
           "type": "look",
           "settings": {
+            "image": "shopify://shop_images/IMG_2249.jpg",
             "eyebrow": "Night edit",
             "heading": "Monochrome layers",
             "product": "",
