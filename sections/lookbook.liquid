@@ -12,21 +12,81 @@
     {% for block in section.blocks %}
       {% liquid
         assign block_product = all_products[block.settings.product]
+        assign look_url = '#'
+        if block_product != blank
+          assign look_url = block_product.url
+        elsif block.settings.link != blank
+          assign look_url = block.settings.link
+        endif
+
+        assign image_count = 0
+        if block.settings.image != blank
+          assign image_count = image_count | plus: 1
+        endif
+        if block.settings.secondary_image != blank
+          assign image_count = image_count | plus: 1
+        endif
+        if block.settings.detail_image != blank
+          assign image_count = image_count | plus: 1
+        endif
+        if block.settings.alternate_image != blank
+          assign image_count = image_count | plus: 1
+        endif
       %}
       <article class="lookbook-card card" {{ block.shopify_attributes }}>
-        <a href="{% if block_product != blank %}{{ block_product.url }}{% elsif block.settings.link != blank %}{{ block.settings.link }}{% else %}#{% endif %}">
+        <div class="lookbook-card__media{% if image_count > 1 %} lookbook-card__media--multi{% endif %}">
           {% if block.settings.image != blank %}
-            {% render
-              'image',
-              image: block.settings.image,
-              width: 1400,
-              class: 'lookbook-card__image',
-              sizes: '(min-width: 990px) 30vw, (min-width: 750px) 50vw, 100vw'
-            %}
-          {% else %}
+            <a class="lookbook-card__media-item lookbook-card__media-item--primary" href="{{ look_url }}">
+              {% render
+                'image',
+                image: block.settings.image,
+                width: 1400,
+                class: 'lookbook-card__image',
+                sizes: '(min-width: 990px) 30vw, (min-width: 750px) 50vw, 100vw'
+              %}
+            </a>
+          {% endif %}
+
+          {% if block.settings.secondary_image != blank %}
+            <a class="lookbook-card__media-item" href="{{ look_url }}">
+              {% render
+                'image',
+                image: block.settings.secondary_image,
+                width: 900,
+                class: 'lookbook-card__image',
+                sizes: '(min-width: 990px) 15vw, (min-width: 750px) 25vw, 50vw'
+              %}
+            </a>
+          {% endif %}
+
+          {% if block.settings.detail_image != blank %}
+            <a class="lookbook-card__media-item" href="{{ look_url }}">
+              {% render
+                'image',
+                image: block.settings.detail_image,
+                width: 900,
+                class: 'lookbook-card__image',
+                sizes: '(min-width: 990px) 15vw, (min-width: 750px) 25vw, 50vw'
+              %}
+            </a>
+          {% endif %}
+
+          {% if block.settings.alternate_image != blank %}
+            <a class="lookbook-card__media-item" href="{{ look_url }}">
+              {% render
+                'image',
+                image: block.settings.alternate_image,
+                width: 900,
+                class: 'lookbook-card__image',
+                sizes: '(min-width: 990px) 15vw, (min-width: 750px) 25vw, 50vw'
+              %}
+            </a>
+          {% endif %}
+
+          {% if image_count == 0 %}
             {{ 'collection-1' | placeholder_svg_tag: 'lookbook-card__placeholder' }}
           {% endif %}
-        </a>
+        </div>
 
         <div class="card__content">
           {% if block.settings.eyebrow != blank %}
@@ -60,6 +120,37 @@
     letter-spacing: 0.08em;
     font-size: 0.75rem;
     font-weight: 600;
+  }
+
+  .lookbook-card__media {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .lookbook-card__media--multi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lookbook-card__media--multi .lookbook-card__media-item--primary {
+    grid-column: 1 / -1;
+  }
+
+  .lookbook-card__media-item {
+    display: block;
+    overflow: hidden;
+    border-radius: 0.75rem;
+  }
+
+  .lookbook-card__image img,
+  .lookbook-card__placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border);
+    background-color: #fff;
   }
 
   @media (max-width: 989px) {
@@ -100,7 +191,22 @@
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Image"
+          "label": "Main image"
+        },
+        {
+          "type": "image_picker",
+          "id": "secondary_image",
+          "label": "Secondary image"
+        },
+        {
+          "type": "image_picker",
+          "id": "detail_image",
+          "label": "Detail image"
+        },
+        {
+          "type": "image_picker",
+          "id": "alternate_image",
+          "label": "Alternate image"
         },
         {
           "type": "text",
