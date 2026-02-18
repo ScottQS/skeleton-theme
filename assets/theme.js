@@ -221,6 +221,31 @@
     }
   }
 
+  const initLookbookGalleries = () => {
+    document.querySelectorAll('[data-lookbook-gallery]').forEach((gallery) => {
+      const slides = [...gallery.querySelectorAll('[data-gallery-slide]')];
+      const thumbs = [...gallery.querySelectorAll('[data-gallery-thumb]')];
+
+      if (slides.length <= 1 || thumbs.length === 0) return;
+
+      const showSlide = (targetIndex) => {
+        slides.forEach((slide, index) => {
+          slide.classList.toggle('is-active', index === targetIndex);
+        });
+        thumbs.forEach((thumb, index) => {
+          thumb.classList.toggle('is-active', index === targetIndex);
+        });
+      };
+
+      thumbs.forEach((thumb) => {
+        thumb.addEventListener('click', () => {
+          const targetIndex = Number(thumb.dataset.slideIndex || 0);
+          showSlide(targetIndex);
+        });
+      });
+    });
+  };
+
   const initProductRecommendations = () => {
     document.querySelectorAll('[data-product-recommendations]').forEach(async (section) => {
       const url = section.dataset.url;
@@ -259,6 +284,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     initProductForms();
     initPredictiveSearch();
+    initLookbookGalleries();
     initProductRecommendations();
   });
 })();
