@@ -65,9 +65,10 @@
         "look_one": {
           "type": "look",
           "settings": {
-            "image": "shopify://shop_images/Untitled-51.jpg",
-            "secondary_image": "shopify://shop_images/Untitled-43.png",
+            "image": "shopify://shop_images/IMG_5533.jpg",
+            "secondary_image": "shopify://shop_images/Untitled-51.jpg",
             "detail_image": "shopify://shop_images/IMG_3754.jpg",
+            "alternate_image": "shopify://shop_images/Untitled-43.png",
             "eyebrow": "Night edit",
             "heading": "Monochrome layers",
             "product": "",
