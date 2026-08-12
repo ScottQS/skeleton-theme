@@ -10,7 +10,7 @@
         {{ section.settings.hero_image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: section.settings.heading }}
       {% else %}
         <img
-          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=88"
+          src="{{ 'hospitality-hero.jpg' | asset_url }}"
           width="2400"
           height="1600"
           alt="Sunlit Mediterranean suite opening onto a pool"
@@ -75,20 +75,20 @@
       {% else %}
         <article class="stay-card">
           <a class="stay-card__image" href="{{ section.settings.stays_link }}">
-            <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=84" width="1200" height="1500" alt="Warm and elegant garden suite" loading="lazy">
+            <img src="{{ 'stay-olive.jpg' | asset_url }}" width="1200" height="1500" alt="Warm and elegant garden suite" loading="lazy">
             <span class="stay-card__tag">Guest favourite</span>
           </a>
           <div class="stay-card__body"><div><p class="stay-card__location">Garden house · Sleeps 2</p><h3><a href="{{ section.settings.stays_link }}">The Olive Room</a></h3></div><p class="stay-card__price">From $290 / night</p></div>
         </article>
         <article class="stay-card stay-card--raised">
           <a class="stay-card__image" href="{{ section.settings.stays_link }}">
-            <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=84" width="1200" height="1500" alt="Suite with natural textures and soft linen" loading="lazy">
+            <img src="{{ 'stay-terracotta.jpg' | asset_url }}" width="1200" height="1500" alt="Suite with natural textures and soft linen" loading="lazy">
           </a>
           <div class="stay-card__body"><div><p class="stay-card__location">Terrace suite · Sleeps 2</p><h3><a href="{{ section.settings.stays_link }}">The Terracotta</a></h3></div><p class="stay-card__price">From $340 / night</p></div>
         </article>
         <article class="stay-card">
           <a class="stay-card__image" href="{{ section.settings.stays_link }}">
-            <img src="https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1200&q=84" width="1200" height="1500" alt="Private villa living room overlooking the hills" loading="lazy">
+            <img src="{{ 'stay-verde.jpg' | asset_url }}" width="1200" height="1500" alt="Private villa living room overlooking the hills" loading="lazy">
             <span class="stay-card__tag">Private pool</span>
           </a>
           <div class="stay-card__body"><div><p class="stay-card__location">Hill villa · Sleeps 4</p><h3><a href="{{ section.settings.stays_link }}">Casa Verde</a></h3></div><p class="stay-card__price">From $510 / night</p></div>
@@ -103,7 +103,7 @@
       {% if section.settings.story_image != blank %}
         {{ section.settings.story_image | image_url: width: 1800 | image_tag: widths: '750, 1100, 1500, 1800', sizes: '(min-width: 900px) 55vw, 100vw', loading: 'lazy', alt: section.settings.story_heading }}
       {% else %}
-        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=86" width="1800" height="1800" alt="Hotel courtyard surrounded by palms" loading="lazy">
+        <img src="{{ 'hospitality-story.jpg' | asset_url }}" width="1800" height="1800" alt="Hotel courtyard surrounded by palms" loading="lazy">
       {% endif %}
       <span class="hospitality__seal">Made for<br>slow days<br>° 2026</span>
     </div>
@@ -135,13 +135,13 @@
               {% else %}
                 {% case forloop.index %}
                   {% when 1 %}
-                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=1000&q=84" width="1000" height="1250" alt="Handmade pasta at the kitchen table" loading="lazy">
+                    <img src="{{ 'experience-gather.jpg' | asset_url }}" width="1000" height="1250" alt="Handmade pasta at the kitchen table" loading="lazy">
                   {% when 2 %}
-                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=84" width="1000" height="1250" alt="A quiet lake beneath green hills" loading="lazy">
+                    <img src="{{ 'experience-wander.jpg' | asset_url }}" width="1000" height="1250" alt="A quiet lake beneath green hills" loading="lazy">
                   {% when 3 %}
-                    <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=84" width="1000" height="1250" alt="Restorative pool and spa" loading="lazy">
+                    <img src="{{ 'experience-restore.jpg' | asset_url }}" width="1000" height="1250" alt="Restorative pool and spa" loading="lazy">
                   {% else %}
-                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1000&q=84" width="1000" height="1250" alt="Seasonal produce served at the table" loading="lazy">
+                    <img src="{{ 'experience-taste.jpg' | asset_url }}" width="1000" height="1250" alt="Seasonal produce served at the table" loading="lazy">
                 {% endcase %}
               {% endif %}
               <span aria-hidden="true">↗</span>
@@ -170,7 +170,7 @@
     </div>
     <div class="hospitality__journal-card">
       <a href="{{ blogs.news.url | default: section.settings.journal_link }}">
-        <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1400&q=84" width="1400" height="900" alt="Wildflowers gathered from the hotel garden" loading="lazy">
+        <img src="{{ 'journal-garden.jpg' | asset_url }}" width="1400" height="900" alt="Wildflowers gathered from the hotel garden" loading="lazy">
       </a>
       <div>
         <p>From the garden · 6 min read</p>
