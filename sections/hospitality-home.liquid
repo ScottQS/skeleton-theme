@@ -1,0 +1,489 @@
+{% liquid
+  assign featured_collection = section.settings.featured_collection
+  assign eyebrow = section.settings.eyebrow
+%}
+
+<section class="hospitality" data-section-id="{{ section.id }}">
+  <div class="hospitality__hero full-width">
+    <div class="hospitality__hero-media">
+      {% if section.settings.hero_image != blank %}
+        {{ section.settings.hero_image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: section.settings.heading }}
+      {% else %}
+        <img
+          src="{{ 'hospitality-hero.jpg' | asset_url }}"
+          width="2400"
+          height="1600"
+          alt="Sunlit Mediterranean suite opening onto a pool"
+          loading="eager"
+          fetchpriority="high"
+        >
+      {% endif %}
+    </div>
+    <div class="hospitality__hero-overlay"></div>
+    <div class="hospitality__hero-copy">
+      <p class="hospitality__eyebrow hospitality__eyebrow--light">{{ eyebrow }}</p>
+      <h1>{{ section.settings.heading }}</h1>
+      <p class="hospitality__intro">{{ section.settings.intro }}</p>
+      <a class="hospitality__button hospitality__button--light" href="{{ section.settings.hero_link }}">
+        {{ section.settings.hero_label }}
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="hospitality__hero-note" aria-hidden="true">
+      <span>38.7223° N</span>
+      <i></i>
+      <span>9.1393° W</span>
+    </div>
+    <a class="hospitality__scroll" href="#stays" aria-label="Explore our stays">
+      <span>Discover</span>
+      <i aria-hidden="true">↓</i>
+    </a>
+  </div>
+
+  <div class="hospitality__promise">
+    <p>{{ section.settings.promise }}</p>
+  </div>
+
+  <div class="hospitality__stays" id="stays">
+    <div class="hospitality__section-heading">
+      <div>
+        <p class="hospitality__eyebrow">Stay awhile</p>
+        <h2>{{ section.settings.stays_heading }}</h2>
+      </div>
+      <p>{{ section.settings.stays_text }}</p>
+    </div>
+
+    <div class="hospitality__stay-grid">
+      {% if featured_collection != blank and featured_collection.products_count > 0 %}
+        {% for product in featured_collection.products limit: 3 %}
+          <article class="stay-card">
+            <a class="stay-card__image" href="{{ product.url }}">
+              {% if product.featured_image != blank %}
+                {{ product.featured_image | image_url: width: 1200 | image_tag: widths: '480, 720, 960, 1200', sizes: '(min-width: 900px) 33vw, 100vw', loading: 'lazy', alt: product.title }}
+              {% endif %}
+              {% if product.tags contains 'New' %}<span class="stay-card__tag">New</span>{% endif %}
+            </a>
+            <div class="stay-card__body">
+              <div>
+                <p class="stay-card__location">{{ product.vendor | default: 'Auberge No. 8' }}</p>
+                <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+              </div>
+              <p class="stay-card__price">From {{ product.price | money }} / night</p>
+            </div>
+          </article>
+        {% endfor %}
+      {% else %}
+        <article class="stay-card">
+          <a class="stay-card__image" href="{{ section.settings.stays_link }}">
+            <img src="{{ 'stay-olive.jpg' | asset_url }}" width="1200" height="1500" alt="Warm and elegant garden suite" loading="lazy">
+            <span class="stay-card__tag">Guest favourite</span>
+          </a>
+          <div class="stay-card__body"><div><p class="stay-card__location">Garden house · Sleeps 2</p><h3><a href="{{ section.settings.stays_link }}">The Olive Room</a></h3></div><p class="stay-card__price">From $290 / night</p></div>
+        </article>
+        <article class="stay-card stay-card--raised">
+          <a class="stay-card__image" href="{{ section.settings.stays_link }}">
+            <img src="{{ 'stay-terracotta.jpg' | asset_url }}" width="1200" height="1500" alt="Suite with natural textures and soft linen" loading="lazy">
+          </a>
+          <div class="stay-card__body"><div><p class="stay-card__location">Terrace suite · Sleeps 2</p><h3><a href="{{ section.settings.stays_link }}">The Terracotta</a></h3></div><p class="stay-card__price">From $340 / night</p></div>
+        </article>
+        <article class="stay-card">
+          <a class="stay-card__image" href="{{ section.settings.stays_link }}">
+            <img src="{{ 'stay-verde.jpg' | asset_url }}" width="1200" height="1500" alt="Private villa living room overlooking the hills" loading="lazy">
+            <span class="stay-card__tag">Private pool</span>
+          </a>
+          <div class="stay-card__body"><div><p class="stay-card__location">Hill villa · Sleeps 4</p><h3><a href="{{ section.settings.stays_link }}">Casa Verde</a></h3></div><p class="stay-card__price">From $510 / night</p></div>
+        </article>
+      {% endif %}
+    </div>
+    <a class="hospitality__text-link" href="{{ section.settings.stays_link }}">View all rooms <span aria-hidden="true">↗</span></a>
+  </div>
+
+  <div class="hospitality__story full-width" id="story">
+    <div class="hospitality__story-media">
+      {% if section.settings.story_image != blank %}
+        {{ section.settings.story_image | image_url: width: 1800 | image_tag: widths: '750, 1100, 1500, 1800', sizes: '(min-width: 900px) 55vw, 100vw', loading: 'lazy', alt: section.settings.story_heading }}
+      {% else %}
+        <img src="{{ 'hospitality-story.jpg' | asset_url }}" width="1800" height="1800" alt="Hotel courtyard surrounded by palms" loading="lazy">
+      {% endif %}
+      <span class="hospitality__seal">Made for<br>slow days<br>° 2026</span>
+    </div>
+    <div class="hospitality__story-copy">
+      <p class="hospitality__eyebrow">The house</p>
+      <h2>{{ section.settings.story_heading }}</h2>
+      <div class="hospitality__story-text">{{ section.settings.story_text }}</div>
+      <a class="hospitality__button hospitality__button--dark" href="{{ section.settings.story_link }}">Read our story <span aria-hidden="true">→</span></a>
+      <dl>
+        <div><dt>12</dt><dd>Rooms, each one different</dd></div>
+        <div><dt>04</dt><dd>Acres of gardens & groves</dd></div>
+        <div><dt>01</dt><dd>Very long table</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="hospitality__experiences" id="experiences">
+    <div class="hospitality__section-heading hospitality__section-heading--center">
+      <p class="hospitality__eyebrow">Beyond the room</p>
+      <h2>{{ section.settings.experiences_heading }}</h2>
+    </div>
+    <div class="hospitality__experience-grid">
+      {% for block in section.blocks %}
+        {% if block.type == 'experience' %}
+          <a class="experience-card" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+            <div class="experience-card__media">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 1000 | image_tag: widths: '400, 600, 800, 1000', sizes: '(min-width: 900px) 25vw, 80vw', loading: 'lazy', alt: block.settings.title }}
+              {% else %}
+                {% case forloop.index %}
+                  {% when 1 %}
+                    <img src="{{ 'experience-gather.jpg' | asset_url }}" width="1000" height="1250" alt="Handmade pasta at the kitchen table" loading="lazy">
+                  {% when 2 %}
+                    <img src="{{ 'experience-wander.jpg' | asset_url }}" width="1000" height="1250" alt="A quiet lake beneath green hills" loading="lazy">
+                  {% when 3 %}
+                    <img src="{{ 'experience-restore.jpg' | asset_url }}" width="1000" height="1250" alt="Restorative pool and spa" loading="lazy">
+                  {% else %}
+                    <img src="{{ 'experience-taste.jpg' | asset_url }}" width="1000" height="1250" alt="Seasonal produce served at the table" loading="lazy">
+                {% endcase %}
+              {% endif %}
+              <span aria-hidden="true">↗</span>
+            </div>
+            <p>{{ block.settings.kicker }}</p>
+            <h3>{{ block.settings.title }}</h3>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="hospitality__quote full-width">
+    <div class="hospitality__quote-inner">
+      <span class="hospitality__quote-mark" aria-hidden="true">“</span>
+      <blockquote>{{ section.settings.quote }}</blockquote>
+      <p>{{ section.settings.quote_source }}</p>
+    </div>
+  </div>
+
+  <div class="hospitality__journal" id="journal">
+    <div class="hospitality__journal-heading">
+      <p class="hospitality__eyebrow">Notes from the house</p>
+      <h2>Stories to take with you.</h2>
+      <a class="hospitality__text-link" href="{{ blogs.news.url | default: section.settings.journal_link }}">Read the journal <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="hospitality__journal-card">
+      <a href="{{ blogs.news.url | default: section.settings.journal_link }}">
+        <img src="{{ 'journal-garden.jpg' | asset_url }}" width="1400" height="900" alt="Wildflowers gathered from the hotel garden" loading="lazy">
+      </a>
+      <div>
+        <p>From the garden · 6 min read</p>
+        <h3><a href="{{ blogs.news.url | default: section.settings.journal_link }}">A field guide to doing absolutely nothing</a></h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hospitality { overflow: clip; }
+  .hospitality__hero {
+    min-height: min(82svh, 54rem);
+    display: grid;
+    place-items: end start;
+    color: #fff;
+    isolation: isolate;
+  }
+  .hospitality__hero-media,
+  .hospitality__hero-overlay { position: absolute; inset: 0; z-index: -2; }
+  .hospitality__hero-media img { width: 100%; height: 100%; object-fit: cover; }
+  .hospitality__hero-overlay {
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(12, 35, 29, 0.65) 0%, rgba(12, 35, 29, 0.12) 58%, rgba(12, 35, 29, 0.05) 100%), linear-gradient(0deg, rgba(12, 35, 29, 0.38), transparent 45%);
+  }
+  .hospitality__hero-copy {
+    width: min(48rem, calc(100% - var(--page-margin) * 2));
+    margin: clamp(6rem, 13vw, 10rem) var(--page-margin) clamp(5rem, 9vw, 7rem);
+  }
+  .hospitality__eyebrow {
+    margin-bottom: 1.35rem;
+    color: var(--color-accent);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .hospitality__eyebrow--light { color: #fff; }
+  .hospitality__eyebrow--light::before {
+    content: '';
+    display: inline-block;
+    width: 2.2rem;
+    height: 1px;
+    margin: 0 0.8rem 0.2rem 0;
+    background: currentColor;
+  }
+  .hospitality__hero h1 {
+    max-width: 12ch;
+    font-family: var(--font-display--family);
+    font-size: clamp(3.6rem, 8.3vw, 7.7rem);
+    font-weight: 400;
+    letter-spacing: -0.055em;
+    line-height: 0.88;
+  }
+  .hospitality__intro { max-width: 35rem; margin: 2rem 0; font-size: clamp(1rem, 1.4vw, 1.2rem); }
+  .hospitality__button {
+    min-width: 12.5rem;
+    padding: 0.95rem 1.15rem;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid currentColor;
+    color: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 180ms ease, color 180ms ease;
+  }
+  .hospitality__button--light:hover { background: #fff; color: var(--color-foreground); }
+  .hospitality__button--dark:hover { background: var(--color-foreground); color: var(--color-background); }
+  .hospitality__hero-note {
+    position: absolute;
+    top: 2rem;
+    right: var(--page-margin);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+  .hospitality__hero-note i { width: 2rem; height: 1px; background: currentColor; }
+  .hospitality__scroll {
+    position: absolute;
+    right: var(--page-margin);
+    bottom: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #fff;
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .hospitality__scroll i { font-size: 1rem; font-style: normal; }
+  .hospitality__promise {
+    padding: clamp(5rem, 9vw, 9rem) 0;
+    display: grid;
+    place-items: center;
+  }
+  .hospitality__promise p {
+    max-width: 29ch;
+    font-family: var(--font-display--family);
+    font-size: clamp(2.1rem, 4.6vw, 4.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+    text-align: center;
+  }
+  .hospitality__promise p::first-letter { font-style: italic; color: var(--color-accent); }
+  .hospitality__stays { padding: 0 0 clamp(6rem, 11vw, 10rem); scroll-margin-top: 6rem; }
+  .hospitality__section-heading {
+    margin-bottom: 3rem;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: end;
+    gap: 2rem;
+  }
+  .hospitality__section-heading h2,
+  .hospitality__story h2,
+  .hospitality__journal h2 {
+    max-width: 13ch;
+    font-family: var(--font-display--family);
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+  }
+  .hospitality__section-heading > p { max-width: 34rem; color: var(--color-muted); }
+  .hospitality__stay-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem, 2vw, 2rem); }
+  .stay-card--raised { margin-top: 3rem; }
+  .stay-card__image { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; background: var(--color-surface); }
+  .stay-card__image img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms cubic-bezier(.2,.6,.2,1); }
+  .stay-card:hover .stay-card__image img { transform: scale(1.035); }
+  .stay-card__tag {
+    position: absolute;
+    top: 0.9rem;
+    left: 0.9rem;
+    padding: 0.45rem 0.65rem;
+    background: rgba(255,255,255,0.92);
+    color: var(--color-foreground);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .stay-card__body { padding-top: 1.1rem; display: flex; justify-content: space-between; gap: 1rem; }
+  .stay-card__body a { text-decoration: none; }
+  .stay-card__location, .stay-card__price {
+    color: var(--color-muted);
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .stay-card h3 { margin-top: 0.3rem; font-family: var(--font-display--family); font-size: 1.65rem; font-weight: 400; }
+  .stay-card__price { padding-top: 0.2rem; white-space: nowrap; }
+  .hospitality__text-link {
+    width: fit-content;
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid currentColor;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .hospitality__story {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    background: var(--color-surface);
+    scroll-margin-top: 6rem;
+  }
+  .hospitality__story-media { position: relative; min-height: 48rem; }
+  .hospitality__story-media > img { width: 100%; height: 100%; object-fit: cover; }
+  .hospitality__seal {
+    position: absolute;
+    right: -3.2rem;
+    top: 4rem;
+    width: 6.4rem;
+    height: 6.4rem;
+    padding: 1rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-align: center;
+    text-transform: uppercase;
+    transform: rotate(-8deg);
+  }
+  .hospitality__story-copy { padding: clamp(4rem, 8vw, 8rem) clamp(2rem, 7vw, 7rem); align-self: center; }
+  .hospitality__story-text { max-width: 32rem; margin: 2rem 0; color: var(--color-muted); }
+  .hospitality__story-text p + p { margin-top: 1rem; }
+  .hospitality__story dl { margin-top: clamp(4rem, 7vw, 7rem); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .hospitality__story dl div { border-top: 1px solid color-mix(in srgb, var(--color-foreground) 24%, transparent); padding-top: 1rem; }
+  .hospitality__story dt { font-family: var(--font-display--family); font-size: 1.75rem; }
+  .hospitality__story dd { margin-top: 0.4rem; color: var(--color-muted); font-size: 0.68rem; line-height: 1.4; text-transform: uppercase; }
+  .hospitality__experiences { padding: clamp(6rem, 11vw, 10rem) 0; scroll-margin-top: 6rem; }
+  .hospitality__section-heading--center { display: block; text-align: center; }
+  .hospitality__section-heading--center h2 { margin: auto; }
+  .hospitality__experience-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .experience-card { text-decoration: none; }
+  .experience-card__media { position: relative; aspect-ratio: 4 / 5; overflow: hidden; }
+  .experience-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 650ms ease; }
+  .experience-card:hover img { transform: scale(1.04); }
+  .experience-card__media span {
+    position: absolute;
+    right: 0.8rem;
+    top: 0.8rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+  }
+  .experience-card > p { margin-top: 1rem; color: var(--color-muted); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .experience-card h3 { margin-top: 0.25rem; font-family: var(--font-display--family); font-size: 1.4rem; font-weight: 400; }
+  .hospitality__quote { padding: clamp(6rem, 11vw, 10rem) var(--page-margin); background: var(--color-foreground); color: var(--color-background); text-align: center; }
+  .hospitality__quote-inner { max-width: 65rem; margin: auto; }
+  .hospitality__quote-mark { display: block; height: 3rem; color: var(--color-accent); font-family: var(--font-display--family); font-size: 6rem; line-height: 1; }
+  .hospitality__quote blockquote { font-family: var(--font-display--family); font-size: clamp(2.25rem, 5vw, 5rem); letter-spacing: -0.04em; line-height: 1.03; }
+  .hospitality__quote p { margin-top: 2rem; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; }
+  .hospitality__journal { padding: clamp(6rem, 11vw, 10rem) 0; display: grid; grid-template-columns: 0.72fr 1.28fr; align-items: center; gap: clamp(3rem, 8vw, 8rem); scroll-margin-top: 6rem; }
+  .hospitality__journal-card img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  .hospitality__journal-card > div { margin-top: 1rem; }
+  .hospitality__journal-card p { color: var(--color-muted); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; }
+  .hospitality__journal-card h3 { max-width: 25ch; margin-top: 0.4rem; font-family: var(--font-display--family); font-size: clamp(1.5rem, 2.5vw, 2.35rem); font-weight: 400; line-height: 1.1; }
+  .hospitality__journal-card a { text-decoration: none; }
+  @media (max-width: 900px) {
+    .hospitality__hero { min-height: 76svh; }
+    .hospitality__hero-note { display: none; }
+    .hospitality__scroll span { display: none; }
+    .hospitality__section-heading { grid-template-columns: 1fr; }
+    .hospitality__stay-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .stay-card--raised { margin-top: 0; }
+    .stay-card__image { aspect-ratio: 5 / 6; }
+    .hospitality__story { grid-template-columns: 1fr; }
+    .hospitality__story-media { min-height: 70svh; }
+    .hospitality__seal { right: 1rem; top: auto; bottom: -2.7rem; }
+    .hospitality__story-copy { padding-top: 5rem; }
+    .hospitality__experience-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem 0.8rem; }
+    .hospitality__journal { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .hospitality__hero h1 { font-size: clamp(3.35rem, 18vw, 5rem); }
+    .hospitality__hero-copy { margin-bottom: 4rem; }
+    .hospitality__promise p { text-align: left; }
+    .stay-card__body { display: block; }
+    .stay-card__price { margin-top: 0.6rem; }
+    .hospitality__story dl { grid-template-columns: 1fr; }
+    .hospitality__experience-grid {
+      margin-right: calc(var(--page-margin) * -1);
+      grid-template-columns: repeat(4, minmax(72vw, 1fr));
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .experience-card { scroll-snap-align: start; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Hospitality home",
+  "tag": "section",
+  "class": "hospitality-home",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Hero eyebrow", "default": "A small hotel for unrushed living" },
+    { "type": "text", "id": "heading", "label": "Hero heading", "default": "Come for the quiet. Stay for the feeling." },
+    { "type": "textarea", "id": "intro", "label": "Hero text", "default": "Twelve rooms, a kitchen garden, and the sort of days that unfold without a plan." },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
+    { "type": "text", "id": "hero_label", "label": "Hero button label", "default": "Find your room" },
+    { "type": "url", "id": "hero_link", "label": "Hero button link" },
+    { "type": "textarea", "id": "promise", "label": "Brand promise", "default": "A place to eat well, sleep deeply, and remember what your time is for." },
+    { "type": "text", "id": "stays_heading", "label": "Stays heading", "default": "Rooms with a sense of place." },
+    { "type": "textarea", "id": "stays_text", "label": "Stays text", "default": "Cool linen, warm light, and something green beyond every window. Each room has been gathered slowly, with comfort in mind." },
+    { "type": "collection", "id": "featured_collection", "label": "Rooms collection" },
+    { "type": "url", "id": "stays_link", "label": "All rooms link" },
+    { "type": "image_picker", "id": "story_image", "label": "Story image" },
+    { "type": "text", "id": "story_heading", "label": "Story heading", "default": "Rooted in the good life." },
+    { "type": "richtext", "id": "story_text", "label": "Story text", "default": "<p>We restored an old hill house with a simple idea: hospitality should feel personal. No schedules to keep. No corners cut. Just generous food, thoughtful spaces, and people who know when to help.</p><p>Come as a guest. Leave feeling a little more like yourself.</p>" },
+    { "type": "url", "id": "story_link", "label": "Story link" },
+    { "type": "text", "id": "experiences_heading", "label": "Experiences heading", "default": "The best days don’t need an itinerary." },
+    { "type": "textarea", "id": "quote", "label": "Testimonial", "default": "The rare kind of place that makes you want to miss your flight home." },
+    { "type": "text", "id": "quote_source", "label": "Testimonial source", "default": "Condé Nast Traveller · The 2026 Hot List" },
+    { "type": "url", "id": "journal_link", "label": "Journal link" }
+  ],
+  "blocks": [
+    {
+      "type": "experience",
+      "name": "Experience",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "kicker", "label": "Kicker", "default": "At the house" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Supper from the garden" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hospitality home",
+      "blocks": [
+        { "type": "experience", "settings": { "kicker": "Gather", "title": "Supper from the garden" } },
+        { "type": "experience", "settings": { "kicker": "Wander", "title": "Wild swims & long walks" } },
+        { "type": "experience", "settings": { "kicker": "Restore", "title": "Rituals for slower days" } },
+        { "type": "experience", "settings": { "kicker": "Taste", "title": "The market, with our chef" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
