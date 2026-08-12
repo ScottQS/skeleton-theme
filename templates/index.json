@@ -10,7 +10,43 @@
 {
   "sections": {
     "main": {
-      "type": "hello-world",
+      "type": "hospitality-home",
+      "blocks": {
+        "experience_1": {
+          "type": "experience",
+          "settings": {
+            "kicker": "Gather",
+            "title": "Supper from the garden"
+          }
+        },
+        "experience_2": {
+          "type": "experience",
+          "settings": {
+            "kicker": "Wander",
+            "title": "Wild swims & long walks"
+          }
+        },
+        "experience_3": {
+          "type": "experience",
+          "settings": {
+            "kicker": "Restore",
+            "title": "Rituals for slower days"
+          }
+        },
+        "experience_4": {
+          "type": "experience",
+          "settings": {
+            "kicker": "Taste",
+            "title": "The market, with our chef"
+          }
+        }
+      },
+      "block_order": [
+        "experience_1",
+        "experience_2",
+        "experience_3",
+        "experience_4"
+      ],
       "settings": {}
     }
   },

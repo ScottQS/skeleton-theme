@@ -1,9 +1,9 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Skeleton",
-    "theme_version": "0.1.0",
-    "theme_author": "Shopify",
+    "theme_name": "Auberge",
+    "theme_version": "1.0.0",
+    "theme_author": "Auberge Studio",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://support.shopify.com/"
   },
@@ -17,7 +17,7 @@
       {
         "type": "font_picker",
         "id": "type_primary_font",
-        "default": "work_sans_n4",
+        "default": "assistant_n4",
         "label": "t:general.primary"
       }
     ]
@@ -65,8 +65,26 @@
       {
         "type": "color",
         "id": "foreground_color",
-        "default": "#333333",
+        "default": "#17352D",
         "label": "t:labels.foreground"
+      },
+      {
+        "type": "color",
+        "id": "accent_color",
+        "default": "#B85C3E",
+        "label": "Accent"
+      },
+      {
+        "type": "color",
+        "id": "surface_color",
+        "default": "#F2EDE3",
+        "label": "Surface"
+      },
+      {
+        "type": "color",
+        "id": "muted_color",
+        "default": "#6F7B72",
+        "label": "Muted text"
       },
       {
         "type": "range",
